@@ -17,4 +17,16 @@ RUN rm -f /etc/service/sshd/down && \
 # Create group and user with home directory /data
 
 	addgroup -gid 1000 git && \
-	useradd -d /data -s /bin/bash -g 1000 -u 1000 git
+	useradd -d /data -s /bin/bash -g 1000 -u 1000 git && \
+
+# Rename SSH config directory
+
+	mv /etc/ssh /etc/ssh_dist
+
+# At first we'll check if there any existing config, if not - lets copy default there
+
+CMD (test -f /etc/ssh/sshd_config || cp -a /etc/ssh_dist/* /etc/ssh/) && \
+
+# Now start init as usual
+
+	/sbin/my_init

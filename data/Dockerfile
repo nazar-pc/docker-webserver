@@ -1,7 +1,7 @@
 FROM busybox
 MAINTAINER Nazar Mokrynskyi <nazar@mokrynskyi.com>
 
-# Create main directories for MySQL (MariaDB), Nginx and SSH
+# Create main directories for MySQL (MariaDB), Nginx, PHP-FPM and SSH
 
 RUN mkdir /etc/mysql && \
 	mkdir /var/lib/mysql && \
@@ -11,6 +11,8 @@ RUN mkdir /etc/mysql && \
 	mkdir /var/log/nginx && \
 
 	mkdir -p /usr/local/etc && \
+
+	mkdir /etc/ssh && \
 
 # Setting directories owners for MySQL (MariaDB) and Nginx (like they are in corresponding official images)
 
@@ -37,11 +39,15 @@ RUN mkdir /etc/mysql && \
 	ln -s /user/share/nginx/html /data/nginx/www && \
 
 	mkdir /data/php && \
-	ln -s /usr/local/etc /data/php/config
+	ln -s /usr/local/etc /data/php/config && \
+
+	mkdir /data/ssh && \
+	ln -s /etc/ssh /data/ssh/config
 
 VOLUME	/data \
 		/etc/mysql \
 		/etc/nginx \
+		/etc/ssh \
 		/usr/local/etc \
 		/var/lib/mysql \
 		/var/log/mysql \

@@ -14,7 +14,7 @@ nginx:
   links:
     - php
   ports:
-    - "127.0.0.1:1111:80"
+    - 127.0.0.1:1111:80
   restart: always
   volumes_from:
     - data
