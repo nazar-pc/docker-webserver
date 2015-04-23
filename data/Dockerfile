@@ -17,6 +17,7 @@ RUN mkdir /etc/mysql && \
 # Setting directories owners for MySQL (MariaDB) and Nginx (like they are in corresponding official images)
 
 	chown 999:999 /var/lib/mysql && \
+	chmod 770 /var/lib/mysql && \
 	chown 999:999 /var/log/mysql && \
 
 	chown 1000:1000 /usr/share/nginx/html && \

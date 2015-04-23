@@ -1,20 +1,20 @@
 data:
   image: nazarpc/webserver:data
+#  volumes_from:
+#    - {container inherited from nazarpc/webserver:data for permanent storage}
 
 db:
   image: nazarpc/webserver:mariadb
   restart: always
   volumes_from:
     - data
-  environment:
-    - MYSQL_ROOT_PASSWORD=pass
 
 nginx:
   image: nazarpc/webserver:nginx
   links:
     - php
-  ports:
-    - 127.0.0.1:1111:80
+#  ports:
+#    - 127.0.0.1:{port on localhost where to bind}:80
   restart: always
   volumes_from:
     - data
