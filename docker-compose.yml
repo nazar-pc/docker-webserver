@@ -14,7 +14,7 @@ nginx:
   links:
     - php
 #  ports:
-#    - 127.0.0.1:{port on localhost where to bind}:80
+#    - {ip where to bind}:{port on localhost where to bind}:80
   restart: always
   volumes_from:
     - data
@@ -32,3 +32,5 @@ ssh:
   restart: always
   volumes_from:
     - data
+#  ports:
+#    - {ip where to bind}:{port on localhost where to bind}:80
