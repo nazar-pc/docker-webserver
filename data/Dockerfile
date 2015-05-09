@@ -37,7 +37,7 @@ RUN mkdir /etc/mysql && \
 	mkdir /data/nginx && \
 	ln -s /etc/nginx /data/nginx/config && \
 	ln -s /var/log/nginx /data/nginx/log && \
-	ln -s /user/share/nginx/html /data/nginx/www && \
+	ln -s /usr/share/nginx/html /data/nginx/www && \
 
 	mkdir /data/php && \
 	ln -s /usr/local/etc /data/php/config && \
@@ -50,6 +50,7 @@ VOLUME	/data \
 		/etc/nginx \
 		/etc/ssh \
 		/usr/local/etc \
+		/usr/share/nginx/html \
 		/var/lib/mysql \
 		/var/log/mysql \
 		/var/log/nginx

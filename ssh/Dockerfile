@@ -14,10 +14,11 @@ RUN rm -f /etc/service/sshd/down && \
 	apt-get clean && \
 	rm -rf /var/lib/apt/lists/* && \
 
-# Create group and user with home directory /data
+# Create group and user with home directory /data, set empty password to unlock account
 
 	addgroup -gid 1000 git && \
 	useradd -d /data -s /bin/bash -g 1000 -u 1000 git && \
+	passwd -d git && \
 
 # Rename SSH config directory
 
