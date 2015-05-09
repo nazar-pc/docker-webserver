@@ -33,4 +33,4 @@ ssh:
   volumes_from:
     - data
 #  ports:
-#    - {ip where to bind}:{port on localhost where to bind}:80
+#    - {ip where to bind}:{port on localhost where to bind}:22
