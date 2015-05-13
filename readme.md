@@ -1,10 +1,12 @@
 # WebServer (MariaDB, PHP-FPM, Nginx) composed from several separate containers linked together
 Currently WebServer consists of such containers:
-* Data-only container (based on `busybox` image)
-* MariaDB (based on official image)
-* Nginx (based on official image)
+* Data-only container (based on official `busybox` image)
+* MariaDB (based on official `MariaDB` image)
+* Nginx (based on official `Nginx` image)
 * PHP-FPM (based on `nazarpc/php-fom` image, which is official image + bunch of frequently used PHP extensions)
 * SSH (based on `phusion/baseimage` image, contains pre-installed `git`, `mc` and `wget` for your convenience)
+* backup container (based on official `busybox` image)
+* restore container (based on official `busybox` image)
 
 # How to use
 The most convenient way to use all this is [Docker Compose](https://docs.docker.com/compose/)
@@ -89,6 +91,8 @@ docker pull nazarpc/webserver:mariadb
 docker pull nazarpc/webserver:nginx
 docker pull nazarpc/webserver:php-fpm
 docker pull nazarpc/webserver:ssh
+docker pull nazarpc/webserver:backup
+docker pull nazarpc/webserver:restore
 ```
 
 Now just go into directory with `docker-compose.yml` and run already familiar command:
@@ -99,12 +103,22 @@ docker-compose up -d
 All containers will be recreated from new images in few seconds.
 
 # Backup
-To make backup it is enough to backup `example.com` container you've created from the beginning:
+To make backup you need to only backup volumes of data-only container. The easiest way to do that is using `nazarpc/webserver:backup` image:
 ```
-docker export example.com > example.com.tar
+docker run --rm --volumes-from example.com -v /backup-on-host:/backup --env BACKUP_FILENAME=new-backup nazarpc/webserver:backup
 ```
 
+Ths will result in `/backup-on-host/new-backup.tar` file created - feel free to specify other directory and other name for backup file.
+
 All other containers are standard and doesn't contain anything important, that is why upgrade process is so simple.
+
+# Restore
+Restoration from backup is not more difficult that making backup, there is `nazarpc/webserver:restore` image for that:
+```
+docker run --rm --volumes-from example.com -v /backup-on-host/new-backup.tar:/backup.tar nazarpc/webserver:restore
+```
+
+That is it, empty just created `example.com` container will be filled with data from backup and ready to use.
 
 # SSH
 SSH might be needed to access files from outside, especially with git.
