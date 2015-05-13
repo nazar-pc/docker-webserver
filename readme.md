@@ -108,7 +108,7 @@ To make backup you need to only backup volumes of data-only container. The easie
 docker run --rm --volumes-from example.com -v /backup-on-host:/backup --env BACKUP_FILENAME=new-backup nazarpc/webserver:backup
 ```
 
-Ths will result in `/backup-on-host/new-backup.tar` file created - feel free to specify other directory and other name for backup file.
+This will result in `/backup-on-host/new-backup.tar` file being created - feel free to specify other directory and other name for backup file.
 
 All other containers are standard and doesn't contain anything important, that is why upgrade process is so simple.
 
