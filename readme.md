@@ -11,7 +11,7 @@ Currently WebServer consists of such containers:
 # How to use
 The most convenient way to use all this is [Docker Compose](https://docs.docker.com/compose/)
 
-At first you'll need to create persistent data-only container that will store all files, databases, ssh keys and setting of all these things:
+At first you'll need to create persistent data-only container that will store all files, databases, ssh keys and settings of all these things:
 ```
 docker run --name example.com nazarpc/webserver:data
 ```
