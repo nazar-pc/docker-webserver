@@ -134,8 +134,6 @@ Now you should be able to access container as `git` user:
 ssh git@example.com
 ```
 
-Optionally you might want to do the same for root user, create `/root/.ssh/authorized_keys` file similarly
-
 # Internal structure
 Internally all that matters is `/data` directory - it contains all necessary symlinks for your convenience - here you can see files for Nginx and MariaDB, their logs and configs, PHP-FPM's config, SSH config and SSH keys directory.
 That is all what will be persistent, everything else outside `/data` will be lost during upgrade.
