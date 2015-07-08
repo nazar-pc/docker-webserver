@@ -1,4 +1,4 @@
-FROM nazarpc/php-fpm
+FROM nazarpc/php:fpm
 MAINTAINER Nazar Mokrynskyi <nazar@mokrynskyi.com>
 
 # Change PHP-FPM user

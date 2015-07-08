@@ -3,7 +3,7 @@ Currently WebServer consists of such containers:
 * Data-only container (based on official `busybox` image)
 * MariaDB (based on official `MariaDB` image)
 * Nginx (based on official `Nginx` image)
-* PHP-FPM (based on `nazarpc/php-fom` image, which is official image + bunch of frequently used PHP extensions)
+* PHP-FPM (based on `nazarpc/php:fpm` image, which is official image + bunch of frequently used PHP extensions)
 * SSH (based on `phusion/baseimage` image, contains pre-installed `git`, `mc` and `wget` for your convenience)
 * backup container (based on official `busybox` image)
 * restore container (based on official `busybox` image)
