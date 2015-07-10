@@ -7,6 +7,7 @@ Currently WebServer consists of such containers:
 * SSH (based on `phusion/baseimage` image, contains pre-installed `git`, `mc` and `wget` for your convenience)
 * backup container (based on official `busybox` image)
 * restore container (based on official `busybox` image)
+* [nazarpc/webserver-apps](https://github.com/nazar-pc/docker-webserver-apps) for ready to use applications that plays nicely with images mentioned above
 
 # How to use
 The most convenient way to use all this is [Docker Compose](https://docs.docker.com/compose/)
