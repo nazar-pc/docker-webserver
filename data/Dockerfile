@@ -43,7 +43,11 @@ RUN mkdir /etc/mysql && \
 	ln -s /usr/local/etc /data/php/config && \
 
 	mkdir /data/ssh && \
-	ln -s /etc/ssh /data/ssh/config
+	ln -s /etc/ssh /data/ssh/config && \
+
+# Set owner of new directories
+
+	chown -R 1000:1000 /data
 
 VOLUME	/data \
 		/etc/mysql \
