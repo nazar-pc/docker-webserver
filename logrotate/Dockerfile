@@ -14,4 +14,4 @@ COPY logrotate.conf /etc/logrotate.conf
 
 # Run logrotate every hour
 
-CMD watch --no-title --interval 3600 logrotate
+CMD watch --no-title --interval 3600 logrotate /etc/logrotate.conf
