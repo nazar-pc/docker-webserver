@@ -28,7 +28,7 @@ cd example.com
 
 Now create `docker-compose.yml` inside with following contents:
 
-```
+```yml
 data:
   image: nazarpc/webserver:data
   volumes_from:
