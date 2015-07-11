@@ -23,6 +23,7 @@ This container will start and stop immediately, that is OK.
 After this create directory for your website, it will contain `docker-compose.yml` file and potentially more files you'll need:
 ```
 mkdir example.com
+cd example.com
 ```
 
 Now create `docker-compose.yml` inside with following contents:
@@ -39,7 +40,7 @@ logrotate:
   volumes_from:
     - data
 
-db:
+mariadb:
   image: nazarpc/webserver:mariadb
   restart: always
   volumes_from:
@@ -58,7 +59,7 @@ nginx:
 php:
   image: nazarpc/webserver:php-fpm
   links:
-    - db:mysql
+    - mariadb:mysql
   restart: always
   volumes_from:
     - data
@@ -66,7 +67,7 @@ php:
 #phpmyadmin:
 #  image: nazarpc/phpmyadmin
 #  links:
-#    - db:mysql
+#    - mariadb:mysql
 #  restart: always
 #  ports:
 #    - {ip where to bind}:{port on localhost where to bind}:80
@@ -80,7 +81,7 @@ ssh:
 #    - {ip where to bind}:{port on localhost where to bind}:22
 ```
 
-Now customize it as you like, feel free to comment-out or remove `db`, `php` or `ssh` container if you have just bunch of static files, also you can uncomment `phpmyadmin` container if needed.
+Now customize it as you like, feel free to comment-out or remove `mariadb`, `php` or `ssh` container if you have just bunch of static files, also you can uncomment `phpmyadmin` container if needed.
 
 When you're done with editing:
 ```
