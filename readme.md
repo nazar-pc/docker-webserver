@@ -1,6 +1,7 @@
 # WebServer (MariaDB, PHP-FPM, Nginx) composed from several separate containers linked together
 Currently WebServer consists of such containers:
 * Data-only container (based on official `busybox` image)
+* logrotate container (based on official `debian:jessie` image)
 * MariaDB (based on official `MariaDB` image)
 * Nginx (based on official `Nginx` image)
 * PHP-FPM (based on `nazarpc/php:fpm` image, which is official image + bunch of frequently used PHP extensions)
@@ -31,6 +32,12 @@ data:
   image: nazarpc/webserver:data
   volumes_from:
     - example.com
+
+logrotate:
+  image: nazarpc/webserver:logrotate
+  restart: always
+  volumes_from:
+    - data
 
 db:
   image: nazarpc/webserver:mariadb
@@ -88,6 +95,7 @@ You can easily upgrade your WebServer to new version of software.
 At first, pull new images:
 ```
 docker pull nazarpc/webserver:data
+docker pull nazarpc/webserver:logrotate
 docker pull nazarpc/webserver:mariadb
 docker pull nazarpc/webserver:nginx
 docker pull nazarpc/webserver:php-fpm
