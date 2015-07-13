@@ -6,7 +6,6 @@ MAINTAINER Nazar Mokrynskyi <nazar@mokrynskyi.com>
 RUN apt-get update && \
 	apt-get upgrade -y && \
 	apt-get install --no-install-recommends -y logrotate && \
-	apt-get autoremove -y && \
 	apt-get clean && \
 	rm -rf /var/lib/apt/lists/*
 

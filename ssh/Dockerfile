@@ -10,7 +10,6 @@ RUN rm -f /etc/service/sshd/down && \
 	apt-get update && \
 	apt-get upgrade -y && \
 	apt-get install -y git mc wget && \
-	apt-get autoremove -y && \
 	apt-get clean && \
 	rm -rf /var/lib/apt/lists/* && \
 
