@@ -4,7 +4,7 @@ MAINTAINER Nazar Mokrynskyi <nazar@mokrynskyi.com>
 # Create main directories for MySQL (MariaDB), Nginx, PHP-FPM and SSH
 
 RUN mkdir /etc/mysql && \
-	mkdir /var/lib/mysql && \
+	mkdir -p /var/lib/mysql && \
 	mkdir /var/log/mysql && \
 
 	mkdir -p /usr/share/nginx/html && \
