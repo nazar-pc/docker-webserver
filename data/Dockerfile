@@ -5,7 +5,7 @@ MAINTAINER Nazar Mokrynskyi <nazar@mokrynskyi.com>
 
 RUN mkdir /etc/mysql && \
 	mkdir -p /var/lib/mysql && \
-	mkdir /var/log/mysql && \
+	mkdir -p /var/log/mysql && \
 
 	mkdir -p /usr/share/nginx/html && \
 	mkdir /var/log/nginx && \
