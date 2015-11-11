@@ -23,10 +23,6 @@ RUN rm -f /etc/service/sshd/down && \
 
 	mv /etc/ssh /etc/ssh_dist
 
-# At first we'll check if there any existing config, if not - lets copy default there
+COPY webserver-entrypoint.sh /
 
-CMD (test -f /etc/ssh/sshd_config || cp -a /etc/ssh_dist/* /etc/ssh/) && \
-
-# Now start init as usual
-
-	/sbin/my_init
+ENTRYPOINT ["/webserver-entrypoint.sh"]

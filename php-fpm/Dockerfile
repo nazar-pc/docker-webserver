@@ -1,8 +1,6 @@
 FROM nazarpc/php:fpm
 MAINTAINER Nazar Mokrynskyi <nazar@mokrynskyi.com>
 
-COPY webserver-entrypoint.sh /
-
 # Change PHP-FPM user
 
 RUN sed -i 's/www-data/git/g' /usr/local/etc/php-fpm.conf && \
@@ -14,4 +12,8 @@ RUN sed -i 's/www-data/git/g' /usr/local/etc/php-fpm.conf && \
 
 	mv /usr/local/etc /usr/local/etc_dist
 
+COPY webserver-entrypoint.sh /
+
 ENTRYPOINT ["/webserver-entrypoint.sh"]
+
+CMD ["php-fpm"]
