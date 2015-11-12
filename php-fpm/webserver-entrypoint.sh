@@ -9,8 +9,8 @@ fi
 if [ "$1" = 'php-fpm' ]; then
 	if [ ! -f /usr/local/etc/php-fpm.conf ]; then
 		mkdir -p /usr/local/etc/
-		chown -R 1000:1000 /usr/local/etc
 		cp -a /usr/local/etc_dist/* /usr/local/etc/
+		chown -R 1000:1000 /usr/local/etc
 	fi
 
 	if [ -f /data/php/before_start.sh ]; then
