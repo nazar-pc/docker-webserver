@@ -93,7 +93,16 @@ That is it, you have whole WebServer up and running!
 # Upgrade
 You can easily upgrade your WebServer to new version of software.
 
-At first, pull new images:
+Using Docker Compose upgrade is very simple:
+```
+docker-compose pull
+docker-compose up -d
+```
+All containers will be recreated from new images in few seconds.
+
+Backup/restore images are not present in `docker-compose.yml`, so if you're using them - pull them manually.
+
+Alternatively you can pull all images manually:
 ```
 docker pull nazarpc/webserver:data
 docker pull nazarpc/webserver:logrotate
@@ -105,12 +114,10 @@ docker pull nazarpc/webserver:backup
 docker pull nazarpc/webserver:restore
 ```
 
-Now just go into directory with `docker-compose.yml` and run already familiar command:
+And again in directory with `docker-compose.yml`:
 ```
 docker-compose up -d
 ```
-
-All containers will be recreated from new images in few seconds.
 
 # Backup
 To make backup you need to only backup volumes of data-only container. The easiest way to do that is using `nazarpc/webserver:backup` image:
