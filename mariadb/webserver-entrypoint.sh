@@ -16,6 +16,8 @@ echo "MySQL root password: ${MYSQL_ROOT_PASSWORD}"
 
 if [ -f /data/mysql/before_start.sh ]; then
 	bash /data/mysql/before_start.sh
+else
+	touch /data/mysql/before_start.sh
 fi
 
 # Contents of entrypoint from original image below

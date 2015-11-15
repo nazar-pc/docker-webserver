@@ -15,6 +15,8 @@ if [ "$1" = 'nginx' ]; then
 
 	if [ -f /data/nginx/before_start.sh ]; then
 		bash /data/nginx/before_start.sh
+	else
+		touch /data/nginx/before_start.sh
 	fi
 fi
 

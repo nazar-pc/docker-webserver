@@ -15,6 +15,8 @@ if [ "$1" = 'php-fpm' ]; then
 
 	if [ -f /data/php/before_start.sh ]; then
 		bash /data/php/before_start.sh
+	else
+		touch /data/php/before_start.sh
 	fi
 fi
 
