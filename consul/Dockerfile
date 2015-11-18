@@ -20,6 +20,7 @@ RUN CONSUL_VERSION=0.5.2 && \
 
 	mkdir /etc/consul.d
 
+COPY config.json /etc/consul.d/config.json
 COPY webserver-entrypoint.sh /
 
 ENTRYPOINT ["/webserver-entrypoint.sh"]
