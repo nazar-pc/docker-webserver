@@ -1,5 +1,6 @@
 {
-	"ports" : {
+	"disable_update_check" : true,
+	"ports"                : {
 		"dns" : 53
 	}
 }

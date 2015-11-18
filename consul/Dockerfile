@@ -23,4 +23,6 @@ RUN CONSUL_VERSION=0.5.2 && \
 COPY config.json /etc/consul.d/config.json
 COPY webserver-entrypoint.sh /
 
+ENV GOMAXPROCS 2
+
 ENTRYPOINT ["/webserver-entrypoint.sh"]
