@@ -1,9 +1,17 @@
 FROM nginx
 MAINTAINER Nazar Mokrynskyi <nazar@mokrynskyi.com>
 
+# We'll need inotify-tools package to watch for files changes
+
+RUN apt-get update && \
+	apt-get upgrade -y && \
+	apt-get install -y --no-install-recommends inotify-tools && \
+	apt-get clean && \
+	rm -rf /var/lib/apt/lists/* && \
+
 # Change Nginx user
 
-RUN sed -i 's/user  nginx;/user  git;/g' /etc/nginx/nginx.conf && \
+	sed -i 's/user  nginx;/user  git;/g' /etc/nginx/nginx.conf && \
 
 # Create group and user for Nginx
 
@@ -12,6 +20,7 @@ RUN sed -i 's/user  nginx;/user  git;/g' /etc/nginx/nginx.conf && \
 
 	mv /etc/nginx /etc/nginx_dist
 
+COPY consul-dns.sh /
 COPY webserver-entrypoint.sh /
 
 ENTRYPOINT ["/webserver-entrypoint.sh"]

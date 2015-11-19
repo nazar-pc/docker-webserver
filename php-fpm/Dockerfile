@@ -1,9 +1,17 @@
 FROM nazarpc/php:fpm
 MAINTAINER Nazar Mokrynskyi <nazar@mokrynskyi.com>
 
+# We'll need inotify-tools package to watch for files changes
+
+RUN apt-get update && \
+	apt-get upgrade -y && \
+	apt-get install -y --no-install-recommends inotify-tools && \
+	apt-get clean && \
+	rm -rf /var/lib/apt/lists/* && \
+
 # Change PHP-FPM user
 
-RUN sed -i 's/www-data/git/g' /usr/local/etc/php-fpm.conf && \
+	sed -i 's/www-data/git/g' /usr/local/etc/php-fpm.conf && \
 
 # Create group and user for PHP-FPM
 
@@ -12,6 +20,7 @@ RUN sed -i 's/www-data/git/g' /usr/local/etc/php-fpm.conf && \
 
 	mv /usr/local/etc /usr/local/etc_dist
 
+COPY consul-dns.sh /
 COPY webserver-entrypoint.sh /
 
 ENTRYPOINT ["/webserver-entrypoint.sh"]
