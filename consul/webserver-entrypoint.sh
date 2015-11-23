@@ -23,7 +23,7 @@ function maintain-configuration {
 	while [ true ]; do
 		inotifywait -e modify -qq /etc/hosts
 		update-configuration
-		pkill -s SIGHUP consul
+		pkill --signal SIGHUP consul
 	done &
 }
 # Update configuration on /etc/hosts file changes

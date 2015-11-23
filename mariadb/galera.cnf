@@ -1,0 +1,11 @@
+[mysqld]
+# Enforcing mandatory settings
+wsrep_provider=/usr/lib/galera/libgalera_smm.so
+binlog_format=ROW
+bind-address=0.0.0.0
+default_storage_engine=InnoDB
+innodb_autoinc_lock_mode=2
+innodb_doublewrite=1
+innodb_flush_log_at_trx_commit=0
+transaction_isolation=READ-COMMITTED
+wsrep_on=ON
