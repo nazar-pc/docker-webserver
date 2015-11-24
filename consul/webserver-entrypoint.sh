@@ -59,7 +59,7 @@ function update-configuration {
 }
 
 current_ip=`cat /etc/hosts | awk '{ print $1; exit }'`
-cmd="consul agent -server -advertise $current_ip -config-dir /etc/consul.d -data-dir /tmp/consul -ui-dir /ui"
+cmd="consul agent -server -advertise $current_ip -config-dir /etc/consul.d"
 # TODO: tricky, but should work, review in future versions of Docker Compose
 # $CONSUL_SERVICE contains service name; If service with index 1 not found - very likely this instance has index 1
 MASTER_ADDRESS=`grep -P "_${CONSUL_SERVICE}_1$" /etc/hosts | awk '{ print $2; exit }'`
