@@ -47,22 +47,8 @@ params_before=$@
 set -- $@ --wsrep_cluster_address=gcomm:// --wsrep_on=OFF
 . /docker-entrypoint-init.sh
 
-set -- $params_before  --wsrep_sst_method=xtrabackup-v2 --wsrep_sst_auth=root:$MYSQL_ROOT_PASSWORD
-
-# If this is the only instance of the service - initialize new cluster, otherwise join existing nodes
-if [ ! "`grep -P \"\w+${SERVICE_NAME}_1$\" /etc/hosts`" ]; then
-	set -- $@ --wsrep_cluster_address=gcomm://
-else
-	nodes=''
-	while read service; do
-		service_id=`echo $service | awk '{ print $2 }'`
-		if [ "$nodes" ]; then
-			nodes="$nodes,$service_id"
-		else
-			nodes="$service_id"
-		fi
-	done <<< `grep -P "\w+_${SERVICE_NAME}_\d+$" /etc/hosts`
-	params_before=$@
+# If this is not the only instance of the service - do not use /var/lib/mysql
+if [ "`grep -P \"\w+${SERVICE_NAME}_1$\" /etc/hosts`" ]; then
 	if [ -L /var/lib/mysql_local ]; then
 		echo 'symlink'
 		# Change link to local directory to avoid unavoidable conflicts with first node
@@ -72,8 +58,20 @@ else
 		set -- $@ --wsrep_cluster_address=gcomm:// --wsrep_on=OFF
 		. /docker-entrypoint-init.sh
 	fi
-	set -- $params_before --wsrep_cluster_address=gcomm://$nodes
 fi
+
+# Find other existing nodes to connect to
+nodes=''
+while read service; do
+	service_id=`echo $service | awk '{ print $2 }'`
+	if [ "$nodes" ]; then
+		nodes="$nodes,$service_id"
+	else
+		nodes="$service_id"
+	fi
+done <<< `grep -P "\w+_${SERVICE_NAME}_\d+$" /etc/hosts`
+
+set -- $params_before  --wsrep_sst_method=xtrabackup-v2 --wsrep_sst_auth=root:$MYSQL_ROOT_PASSWORD --wsrep_cluster_address=gcomm://$nodes
 
 if [ -f /data/mysql/before_start.sh ]; then
 	bash /data/mysql/before_start.sh
