@@ -8,7 +8,8 @@
 	"disable_update_check" : true,
 	"leave_on_terminate"   : true,
 	"ports"                : {
-		"dns" : 53
+		"dns"  : 53,
+		"http" : 80
 	},
 	"ui_dir"               : "/ui"
 }
