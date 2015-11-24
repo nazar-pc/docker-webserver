@@ -1,7 +1,19 @@
 #!/bin/bash
 set -e
 
-# Allow to resolve services without `service.consul` suffix and put localhost as one of nameservers
+# Configure recursive DNS resolving
+recursors=''
+while read nameserver; do
+	nameserver_ip=`echo $nameserver | awk '{ print $2 }'`
+	if [ "$recursors" ]; then
+		recursors="$recursors,\"$nameserver_ip\""
+	else
+		recursors="\"$nameserver_ip\""
+	fi
+done <<< "`grep -P "^nameserver" /etc/resolv.conf`"
+echo "{\"recursors\": [$recursors]}" > /etc/consul.d/recursors.json
+
+# Allow to resolve services without `service.consul` suffix and put localhost as first nameserver
 echo -e "search service.consul\nnameserver 127.0.0.1\n`cat /etc/resolv.conf`" > /etc/resolv.conf
 
 if [ ! "$CONSUL_SERVICE" ]; then
@@ -36,11 +48,13 @@ function update-configuration {
 		if [ ! "$service_alias" ]; then
 			service_alias="$service_name"
 		fi
-		for service in `grep -P "\w+_${service_name}_\d+$" /etc/hosts`; do
-			service_id=`echo $service | awk '{ print $2 }'`
-			service_ip=`echo $service | awk '{ print $1 }'`
-			echo "{\"service\": {\"id\": \"$service_id\", \"name\": \"$service_alias\", \"address\": \"$service_ip\"}}" > /etc/consul.d/haproxy-$service_name.json
-		done
+		while read service; do
+			if [ "$service" ]; then
+				service_id=`echo $service | awk '{ print $2 }'`
+				service_ip=`echo $service | awk '{ print $1 }'`
+				echo "{\"service\": {\"id\": \"$service_id\", \"name\": \"$service_alias\", \"address\": \"$service_ip\"}}" > /etc/consul.d/$service_name.json
+			fi
+		done <<< "`grep -P "\w+_${service_name}_\d+$" /etc/hosts`"
 	done
 }
 
@@ -51,9 +65,9 @@ cmd="consul agent -server -advertise $current_ip -config-dir /etc/consul.d -data
 MASTER_ADDRESS=`grep -P "_${CONSUL_SERVICE}_1$" /etc/hosts | awk '{ print $2; exit }'`
 if [ "$MASTER_ADDRESS" ]; then
 	cmd="$cmd -retry-join $MASTER_ADDRESS"
-	maintain-configuration
 else
 	cmd="$cmd -bootstrap-expect $MIN_SERVERS"
+	maintain-configuration
 fi
 
 exec $cmd

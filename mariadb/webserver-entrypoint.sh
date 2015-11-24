@@ -69,7 +69,7 @@ while read service; do
 	else
 		nodes="$service_id"
 	fi
-done <<< `grep -P "\w+_${SERVICE_NAME}_\d+$" /etc/hosts`
+done <<< "`grep -P "\w+_${SERVICE_NAME}_\d+$" /etc/hosts`"
 
 set -- $params_before  --wsrep_sst_method=xtrabackup-v2 --wsrep_sst_auth=root:$MYSQL_ROOT_PASSWORD --wsrep_cluster_address=gcomm://$nodes
 
