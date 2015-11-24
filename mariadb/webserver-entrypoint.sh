@@ -43,35 +43,41 @@ if [ ! -f /etc/mysql/galera.cfg ]; then
 fi
 
 # Initialize MariaDB using entrypoint from original image without last line
-params_before=$@
-set -- $@ --wsrep_cluster_address=gcomm:// --wsrep_on=OFF
+params_before="$@ --wsrep_sst_method=xtrabackup-v2 --wsrep_sst_auth=root:$MYSQL_ROOT_PASSWORD"
+set -- $@ --bind_address=127.0.0.1 --wsrep_cluster_address=gcomm:// --wsrep_on=OFF
 . /docker-entrypoint-init.sh
 
 # If this is not the only instance of the service - do not use /var/lib/mysql
-if [ "`grep -P \"\w+${SERVICE_NAME}_1$\" /etc/hosts`" ]; then
+first_node="`grep -P \"\w+${SERVICE_NAME}_1$\" /etc/hosts | awk '{ print $2 }'`"
+if [ "$first_node" ]; then
 	if [ -L /var/lib/mysql_local ]; then
-		echo 'symlink'
 		# Change link to local directory to avoid unavoidable conflicts with first node
 		rm /var/lib/mysql_local
 		mkdir /var/lib/mysql_local
 		# Initialize MariaDB using entrypoint from original image without last line
-		set -- $@ --wsrep_cluster_address=gcomm:// --wsrep_on=OFF
+		set -- $@ --bind_address=127.0.0.1 --wsrep_cluster_address=gcomm:// --wsrep_on=OFF
 		. /docker-entrypoint-init.sh
 	fi
+	while [[ ! `mysqladmin --host=$first_node --user=root --password=$MYSQL_ROOT_PASSWORD ping` ]]; do
+		echo 'Waiting for the first node to be ready'
+		sleep 1
+	done
+	params_before="$params_before --wsrep_cluster_address=gcomm://$first_node"
+else
+	# Find other existing node to connect to
+	target_node=''
+	while read service; do
+		service_ip=`echo $service | awk '{ print $1 }'`
+		# Check if node is ready
+		if [[ `mysqladmin --host=$service_ip --user=root --password=$MYSQL_ROOT_PASSWORD ping` ]]; then
+			target_node=$service_ip
+			break
+		fi
+	done <<< "`grep -P "\w+_${SERVICE_NAME}_\d+$" /etc/hosts`"
+	params_before="$params_before --wsrep_cluster_address=gcomm://$target_node"
 fi
 
-# Find other existing nodes to connect to
-nodes=''
-while read service; do
-	service_id=`echo $service | awk '{ print $2 }'`
-	if [ "$nodes" ]; then
-		nodes="$nodes,$service_id"
-	else
-		nodes="$service_id"
-	fi
-done <<< "`grep -P "\w+_${SERVICE_NAME}_\d+$" /etc/hosts`"
-
-set -- $params_before  --wsrep_sst_method=xtrabackup-v2 --wsrep_sst_auth=root:$MYSQL_ROOT_PASSWORD --wsrep_cluster_address=gcomm://$nodes
+set -- $params_before
 
 if [ -f /data/mysql/before_start.sh ]; then
 	bash /data/mysql/before_start.sh
