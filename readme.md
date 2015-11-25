@@ -1,11 +1,14 @@
 # WebServer (MariaDB, PHP-FPM, Nginx) composed from several separate containers linked together
-Currently WebServer consists of such containers:
+Currently WebServer consists of such images:
 * Data-only container (based on official `busybox` image)
 * logrotate container (based on official `debian:jessie` image)
 * MariaDB (based on official `MariaDB` image)
 * Nginx (based on official `Nginx` image)
 * PHP-FPM (based on `nazarpc/php:fpm` image, which is official image + bunch of frequently used PHP extensions)
 * SSH (based on `phusion/baseimage` image, contains pre-installed `git`, `mc` and `wget` for your convenience)
+* PhpMyAdmin (based on `nazarpc/phpmyadmin` image, which is official php image with Apache2, where PhpMyAdmin was installed)
+* Consul (based on official `debian:jessie` image)
+* HAProxy (based on official `haproxy` image)
 * backup container (based on official `busybox` image)
 * restore container (based on official `busybox` image)
 * [nazarpc/webserver-apps](https://github.com/nazar-pc/docker-webserver-apps) for ready to use applications that plays nicely with images mentioned above
@@ -65,7 +68,7 @@ php:
     - data
 
 #phpmyadmin:
-#  image: nazarpc/phpmyadmin
+#  image: nazarpc/webserver:phpmyadmin
 #  links:
 #    - mariadb:mysql
 #  restart: always
@@ -89,6 +92,8 @@ docker-compose up -d
 ```
 
 That is it, you have whole WebServer up and running!
+
+**Also you might be interested in [advanced examples](docs/advanced.md) with load balancing, scaling and using Docker Networking feature.**
 
 # Upgrade
 You can easily upgrade your WebServer to new version of software.

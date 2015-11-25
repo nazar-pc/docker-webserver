@@ -23,6 +23,7 @@ RUN rm -f /etc/service/sshd/down && \
 
 	mv /etc/ssh /etc/ssh_dist
 
+COPY consul-dns.sh /
 COPY webserver-entrypoint.sh /
 
 ENTRYPOINT ["/webserver-entrypoint.sh"]

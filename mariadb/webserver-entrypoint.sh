@@ -1,9 +1,7 @@
 #!/bin/bash
 
-/consul-dns.sh &
-
 if [ ! "$SERVICE_NAME" ]; then
-	SERVICE_NAME='mysql'
+	SERVICE_NAME='mariadb'
 fi
 
 if [ ! -f /etc/mysql/my.cnf ]; then

@@ -1,6 +1,8 @@
 #!/bin/bash
 set -e
 
+/consul-dns.sh &
+
 if [ ! -f /etc/ssh/sshd_config ]; then
 	mkdir -p /etc/ssh/
 	cp -a /etc/ssh_dist/* /etc/ssh/

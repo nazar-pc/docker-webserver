@@ -37,7 +37,6 @@ RUN { \
 	chmod +x /docker-entrypoint-init.sh
 
 COPY galera.cnf /etc/mysql_dist/galera.cfg
-COPY consul-dns.sh /
 COPY webserver-entrypoint.sh /
 
 ENTRYPOINT ["/webserver-entrypoint.sh"]
