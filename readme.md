@@ -134,6 +134,8 @@ This will result in `/backup-on-host/new-backup.tar` file being created - feel f
 
 All other containers are standard and doesn't contain anything important, that is why upgrade process is so simple.
 
+**NOTE: You'll likely want to stop MariaDB instance before backup (it is enough to stop first node in case of MariaDB cluster with 2+ nodes)**
+
 # Restore
 Restoration from backup is not more difficult that making backup, there is `nazarpc/webserver:restore` image for that:
 ```
