@@ -52,7 +52,7 @@ function update-configuration {
 			if [ "$service" ]; then
 				service_id=`echo $service | awk '{ print $2 }'`
 				service_ip=`echo $service | awk '{ print $1 }'`
-				echo "{\"service\": {\"id\": \"$service_id\", \"name\": \"$service_alias\", \"address\": \"$service_ip\"}}" > /etc/consul.d/$service_name.json
+				echo "{\"service\": {\"id\": \"$service_id-$service_alias\", \"name\": \"$service_alias\", \"address\": \"$service_ip\"}}" > /etc/consul.d/$service_name-$service_alias.json
 			fi
 		done <<< "`grep -P "\w+_${service_name}_\d+$" /etc/hosts`"
 	done
