@@ -145,7 +145,7 @@ In example above whenever we refer to `mysql` host, it will be resolved to one o
 If you scale `mariadb` instance - new nodes will join existing cluster, replicate, at the same time they'll be added to all HAProxy instances and as soon as ready will start serving users.
 
 # PhpMyAdmin, Nginx, PHP-FPM and SSH
-You don't need to do anything special to start using them, just add them to `docker-compose.yml` and they'l work:
+You don't need to do anything special to start using them, just add them to `docker-compose.yml` and they'll work:
 ```yml
 phpmyadmin:
   image: nazarpc/webserver:phpmyadmin
