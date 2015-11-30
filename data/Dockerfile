@@ -1,9 +1,11 @@
 FROM busybox
 MAINTAINER Nazar Mokrynskyi <nazar@mokrynskyi.com>
 
+RUN \
+
 # Create main directories for MySQL (MariaDB), Nginx, PHP-FPM and SSH
 
-RUN mkdir /etc/mysql && \
+	mkdir /etc/mysql && \
 	mkdir -p /var/lib/mysql && \
 	mkdir -p /var/log/mysql && \
 
@@ -27,34 +29,17 @@ RUN mkdir /etc/mysql && \
 
 	mkdir /data && \
 
-	mkdir /data/.ssh && \
-
-	mkdir /data/mysql && \
-	ln -s /etc/mysql /data/mysql/config && \
-	ln -s /var/log/mysql /data/mysql/log && \
-	ln -s /var/lib/mysql /data/mysql/data && \
-
-	mkdir /data/nginx && \
-	ln -s /etc/nginx /data/nginx/config && \
-	ln -s /var/log/nginx /data/nginx/log && \
-	ln -s /usr/share/nginx/html /data/nginx/www && \
-
-	mkdir /data/php && \
-	ln -s /usr/local/etc /data/php/config && \
-
-	mkdir /data/ssh && \
-	ln -s /etc/ssh /data/ssh/config && \
-
 # Set owner of new directories
 
-	chown -R 1000:1000 /data
+	chown 1000:1000 /data
 
-VOLUME	/data \
-		/etc/mysql \
-		/etc/nginx \
-		/etc/ssh \
-		/usr/local/etc \
-		/usr/share/nginx/html \
-		/var/lib/mysql \
-		/var/log/mysql \
-		/var/log/nginx
+VOLUME \
+	/data \
+	/etc/mysql \
+	/etc/nginx \
+	/etc/ssh \
+	/usr/local/etc \
+	/usr/share/nginx/html \
+	/var/lib/mysql \
+	/var/log/mysql \
+	/var/log/nginx

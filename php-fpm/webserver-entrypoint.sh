@@ -1,6 +1,13 @@
 #!/bin/bash
 set -e
 
+if [ ! -d /data/php ]; then
+	mkdir -p /data/php
+	chown 1000:1000 /data
+	chown -R 1000:1000 /data/php
+	ln -s /usr/local/etc /data/php/config
+fi
+
 /consul-dns.sh &
 
 # if command starts with an option, prepend php-fpm

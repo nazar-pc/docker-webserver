@@ -1,5 +1,14 @@
 #!/bin/bash
 
+if [ ! -d /data/mysql ]; then
+	mkdir -p /data/mysql
+	chown 1000:1000 /data
+	chown -R 1000:1000 /data/mysql
+	ln -s /etc/mysql /data/mysql/config
+	ln -s /var/log/mysql /data/mysql/log
+	ln -s /var/lib/mysql /data/mysql/data
+fi
+
 if [ ! "$SERVICE_NAME" ]; then
 	SERVICE_NAME='mariadb'
 fi
@@ -11,7 +20,6 @@ if [ ! -f /etc/mysql/my.cnf ]; then
 fi
 
 if [ ! -f /data/mysql/root_password ]; then
-	mkdir -p /data/mysql
 	pwgen -s 30 1 > /data/mysql/root_password
 fi
 
