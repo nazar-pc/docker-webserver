@@ -1,9 +1,11 @@
 FROM debian:jessie
 MAINTAINER Nazar Mokrynskyi <nazar@mokrynskyi.com>
 
+RUN \
+
 # Upgrade system and install logrotate, which we'll use to rotate logs
 
-RUN apt-get update && \
+	apt-get update && \
 	apt-get upgrade -y && \
 	apt-get install --no-install-recommends -y logrotate && \
 	apt-get clean && \

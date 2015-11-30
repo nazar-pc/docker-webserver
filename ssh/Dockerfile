@@ -1,9 +1,11 @@
 FROM phusion/baseimage:0.9.17
 MAINTAINER Nazar Mokrynskyi <nazar@mokrynskyi.com>
 
+RUN \
+
 # Enable SSH
 
-RUN rm -f /etc/service/sshd/down && \
+	rm -f /etc/service/sshd/down && \
 
 # Upgrade system and install git, mc and wget
 

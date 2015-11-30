@@ -1,7 +1,9 @@
 FROM debian:jessie
 MAINTAINER Nazar Mokrynskyi <nazar@mokrynskyi.com>
 
-RUN CONSUL_VERSION=0.5.2 && \
+RUN \
+
+	CONSUL_VERSION=0.5.2 && \
 
 	apt-get update && \
 	apt-get upgrade -y && \

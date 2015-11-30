@@ -1,9 +1,11 @@
 FROM busybox
 MAINTAINER Nazar Mokrynskyi <nazar@mokrynskyi.com>
 
+CMD \
+
 # Save volumes into tar file, name of which was specified by BACKUP_FILENAME environment variable
 
-CMD tar -cf "/backup/$BACKUP_FILENAME.tar" \
+	tar -cf "/backup/$BACKUP_FILENAME.tar" \
 	/data \
 	/etc/mysql \
 	/etc/nginx \

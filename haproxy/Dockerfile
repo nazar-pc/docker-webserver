@@ -1,7 +1,8 @@
 FROM haproxy:1
 MAINTAINER Nazar Mokrynskyi <nazar@mokrynskyi.com>
 
-RUN apt-get update && \
+RUN \
+	apt-get update && \
 	apt-get upgrade -y && \
 	apt-get install -y --no-install-recommends inotify-tools && \
 	apt-get clean && \

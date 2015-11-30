@@ -1,12 +1,14 @@
 FROM mariadb:10
 MAINTAINER Nazar Mokrynskyi <nazar@mokrynskyi.com>
 
+RUN \
+
 # Also we'll install MariaDB Gallera server instead of regular in order to be able to build cluster afterwards
 # percona-xtrabackup and socat packages contain innobackupex and socat apps that are necessary for Snapshot State Transfer
 # We'll need inotify-tools package to watch for files changes
 # Upgrade system and install pwgen, which we'll use to generate password
 
-RUN { \
+	{ \
 		echo mariadb-server-$MARIADB_MAJOR mysql-server/root_password password 'unused'; \
 		echo mariadb-server-$MARIADB_MAJOR mysql-server/root_password_again password 'unused'; \
 	} | debconf-set-selections && \

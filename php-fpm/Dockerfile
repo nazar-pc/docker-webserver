@@ -1,9 +1,11 @@
 FROM nazarpc/php:fpm
 MAINTAINER Nazar Mokrynskyi <nazar@mokrynskyi.com>
 
+RUN \
+
 # We'll need inotify-tools package to watch for files changes
 
-RUN apt-get update && \
+	apt-get update && \
 	apt-get upgrade -y && \
 	apt-get install -y --no-install-recommends inotify-tools && \
 	apt-get clean && \
