@@ -41,6 +41,12 @@ RUN \
 COPY galera.cnf /etc/mysql_dist/galera.cfg
 COPY webserver-entrypoint.sh /
 
+VOLUME \
+	/data \
+	/etc/mysql \
+	/var/lib/mysql \
+	/var/log/mysql
+
 ENTRYPOINT ["/webserver-entrypoint.sh"]
 
 CMD ["mysqld"]

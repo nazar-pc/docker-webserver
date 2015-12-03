@@ -7,11 +7,11 @@ RUN \
 
 	rm -f /etc/service/sshd/down && \
 
-# Upgrade system and install git, mc and wget
+# Upgrade system and install curl, git, mc and wget
 
 	apt-get update && \
 	apt-get upgrade -y && \
-	apt-get install -y git mc wget && \
+	apt-get install -y curl git mc wget && \
 	apt-get clean && \
 	rm -rf /var/lib/apt/lists/* && \
 
@@ -27,5 +27,9 @@ RUN \
 
 COPY consul-dns.sh /
 COPY webserver-entrypoint.sh /
+
+VOLUME \
+	/data \
+	/etc/ssh
 
 ENTRYPOINT ["/webserver-entrypoint.sh"]

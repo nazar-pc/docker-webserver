@@ -14,7 +14,6 @@ if [ ! "$SERVICE_NAME" ]; then
 fi
 
 if [ ! -f /etc/mysql/my.cnf ]; then
-	mkdir -p /etc/mysql
 	chown -R 1000:1000 /etc/mysql
 	cp -a /etc/mysql_dist/* /etc/mysql/
 fi

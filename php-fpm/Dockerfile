@@ -25,6 +25,10 @@ RUN \
 COPY consul-dns.sh /
 COPY webserver-entrypoint.sh /
 
+VOLUME \
+	/data \
+	/usr/local/etc
+
 ENTRYPOINT ["/webserver-entrypoint.sh"]
 
 CMD ["php-fpm"]

@@ -25,6 +25,12 @@ RUN \
 COPY consul-dns.sh /
 COPY webserver-entrypoint.sh /
 
+VOLUME \
+	/data \
+	/etc/nginx \
+	/usr/share/nginx/html \
+	/var/log/nginx
+
 ENTRYPOINT ["/webserver-entrypoint.sh"]
 
 CMD ["nginx", "-g", "daemon off;"]

@@ -5,7 +5,7 @@ Currently WebServer consists of such images:
 * MariaDB (based on official `MariaDB` image)
 * Nginx (based on official `Nginx` image)
 * PHP-FPM (based on `nazarpc/php:fpm` image, which is official image + bunch of frequently used PHP extensions)
-* SSH (based on `phusion/baseimage` image, contains pre-installed `git`, `mc` and `wget` for your convenience)
+* SSH (based on `phusion/baseimage` image, contains pre-installed `curl`, `git`, `mc` and `wget` for your convenience)
 * PhpMyAdmin (based on `nazarpc/phpmyadmin` image, which is official php image with Apache2, where PhpMyAdmin was installed)
 * Consul (based on official `debian:jessie` image)
 * HAProxy (based on official `haproxy` image)
