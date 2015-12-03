@@ -1,21 +1,21 @@
 #!/bin/bash
 
+if [ ! -f /etc/mysql/my.cnf ]; then
+	cp -a /etc/mysql_dist/* /etc/mysql/
+	chown -R 1000:1000 /etc/mysql
+fi
+
 if [ ! -d /data/mysql ]; then
 	mkdir -p /data/mysql
 	chown 1000:1000 /data
-	chown -R 1000:1000 /data/mysql
 	ln -s /etc/mysql /data/mysql/config
 	ln -s /var/log/mysql /data/mysql/log
 	ln -s /var/lib/mysql /data/mysql/data
+	chown -R 1000:1000 /data/mysql
 fi
 
 if [ ! "$SERVICE_NAME" ]; then
 	SERVICE_NAME='mariadb'
-fi
-
-if [ ! -f /etc/mysql/my.cnf ]; then
-	chown -R 1000:1000 /etc/mysql
-	cp -a /etc/mysql_dist/* /etc/mysql/
 fi
 
 if [ ! -f /data/mysql/root_password ]; then
