@@ -139,7 +139,7 @@ mariadb:
     - data
 ...
 ```
-* `SERVICE_NAME` - OPTIONAL (defaults to `mariadb`), in this variable you should specify the same name as you name MariaDB service (you can in fact have multiple MariaDB services)
+* `SERVICE_NAME` - OPTIONAL (defaults to `mariadb`), in this variable you should specify the same name as you name MariaDB service (you can in fact have multiple MariaDB services, but make sure you're not using the same data storage or you did some extension to avoid conflicts of `/var/lib/mysql` directory that belongs to different services)
 
 In example above whenever we refer to `mysql` host, it will be resolved to one of running `mariadb-haproxy` instances, and all requests to the port `3306` will be sent over to one of running `mariadb` instances.
 If you scale `mariadb` instance - new nodes will join existing cluster, replicate, at the same time they'll be added to all HAProxy instances and as soon as ready will start serving users.
