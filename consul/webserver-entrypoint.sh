@@ -1,6 +1,19 @@
 #!/bin/bash
 set -e
 
+if [ ! -f /etc/consul.d/config.json ]; then
+	cp -a /etc/consul.d_dist/* /etc/consul.d/
+	chown -R 1000:1000 /etc/consul.d
+fi
+
+if [ ! -d /data/consul ]; then
+	mkdir -p /data/consul
+	chown 1000:1000 /data
+	ln -s /etc/consul.d /data/consul/config
+	ln -s /var/lib/consul /data/consul/data
+	chown -R 1000:1000 /data/consul
+fi
+
 # Configure recursive DNS resolving
 recursors=''
 while read nameserver; do
@@ -40,7 +53,7 @@ function maintain-configuration {
 }
 # Update configuration on /etc/hosts file changes
 function update-configuration {
-	rm -f /etc/consul.d/haproxy*
+	rm -f /etc/consul.d/service-*
 	for service in `echo $SERVICES | tr ','  ' '`; do
 		service=`echo $service | tr ':'  ' '`
 		service_name=`echo $service | awk '{ print $1 }'`
@@ -52,18 +65,23 @@ function update-configuration {
 			if [ "$service" ]; then
 				service_id=`echo $service | awk '{ print $2 }'`
 				service_ip=`echo $service | awk '{ print $1 }'`
-				echo "{\"service\": {\"id\": \"$service_id-$service_alias\", \"name\": \"$service_alias\", \"address\": \"$service_ip\"}}" > /etc/consul.d/$service_name-$service_alias.json
+				echo "{\"service\": {\"id\": \"$service_id-$service_alias\", \"name\": \"$service_alias\", \"address\": \"$service_ip\"}}" > /etc/consul.d/service-$service_name-$service_alias.json
 			fi
 		done <<< "`grep -P "\w+_${service_name}_\d+$" /etc/hosts`"
 	done
 }
 
 current_ip=`cat /etc/hosts | awk '{ print $1; exit }'`
-cmd="consul agent -server -advertise $current_ip -config-dir /etc/consul.d"
+cmd="consul agent -server -advertise $current_ip -config-dir /etc/consul.d $@"
 # TODO: tricky, but should work, review in future versions of Docker Compose
 # $CONSUL_SERVICE contains service name; If service with index 1 not found - very likely this instance has index 1
 MASTER_ADDRESS=`grep -P "_${CONSUL_SERVICE}_1$" /etc/hosts | awk '{ print $2; exit }'`
 if [ "$MASTER_ADDRESS" ]; then
+	if [ -L /var/lib/consul_local ]; then
+		# Change link to local directory to avoid unavoidable conflicts with first node
+		rm /var/lib/consul_local
+		mkdir /var/lib/consul_local
+	fi
 	cmd="$cmd -retry-join $MASTER_ADDRESS"
 else
 	cmd="$cmd -bootstrap-expect $MIN_SERVERS"

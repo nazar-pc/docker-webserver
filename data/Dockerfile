@@ -3,8 +3,9 @@ MAINTAINER Nazar Mokrynskyi <nazar@mokrynskyi.com>
 
 RUN \
 
-# Create main directories for MySQL (MariaDB), Nginx, PHP-FPM and SSH
+# Create main directories for Consul, MySQL (MariaDB), Nginx, PHP-FPM and SSH
 
+	mkdir /etc/consul.d && \
 	mkdir /etc/mysql && \
 	mkdir -p /var/lib/mysql && \
 	mkdir -p /var/log/mysql && \
@@ -35,11 +36,13 @@ RUN \
 
 VOLUME \
 	/data \
+	/etc/consul.d \
 	/etc/mysql \
 	/etc/nginx \
 	/etc/ssh \
 	/usr/local/etc \
 	/usr/share/nginx/html \
+	/var/lib/consul \
 	/var/lib/mysql \
 	/var/log/mysql \
 	/var/log/nginx

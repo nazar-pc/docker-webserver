@@ -20,11 +20,20 @@ RUN \
 
 	apt-get purge --auto-remove -y curl ca-certificates unzip && \
 
-	mkdir /etc/consul.d
+	mkdir /etc/consul.d_dist && \
 
-COPY config.json /etc/consul.d/config.json
+# We'll keep files in /var/lib/consul_local which will be symlink to /var/lib/consul on first instance and local directory on others (changed locally in container)
+
+	ln -s /var/lib/consul /var/lib/consul_local
+
+COPY config.json /etc/consul.d_dist/config.json
 COPY webserver-entrypoint.sh /
 
 ENV GOMAXPROCS 2
+
+VOLUME \
+	/data \
+	/etc/consul.d \
+	/var/lib/consul
 
 ENTRYPOINT ["/webserver-entrypoint.sh"]
