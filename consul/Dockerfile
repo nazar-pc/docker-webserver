@@ -3,7 +3,7 @@ MAINTAINER Nazar Mokrynskyi <nazar@mokrynskyi.com>
 
 RUN \
 
-	CONSUL_VERSION=0.5.2 && \
+	CONSUL_VERSION=0.6.0 && \
 
 	apt-get update && \
 	apt-get upgrade -y && \
@@ -14,8 +14,7 @@ RUN \
 	curl -o /tmp/consul.zip https://releases.hashicorp.com/consul/${CONSUL_VERSION}/consul_${CONSUL_VERSION}_linux_amd64.zip && \
 	curl -o /tmp/consul-ui.zip https://releases.hashicorp.com/consul/${CONSUL_VERSION}/consul_${CONSUL_VERSION}_web_ui.zip && \
 	unzip -d /bin /tmp/consul.zip && \
-	unzip -d / /tmp/consul-ui.zip && \
-	mv /dist /ui && \
+	unzip -d /ui /tmp/consul-ui.zip && \
 	rm /tmp/consul* && \
 
 	apt-get purge --auto-remove -y curl ca-certificates unzip && \
