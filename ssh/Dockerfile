@@ -28,6 +28,8 @@ RUN \
 COPY consul-dns.sh /
 COPY webserver-entrypoint.sh /
 
+ENV TERM=xterm
+
 VOLUME \
 	/data \
 	/etc/ssh

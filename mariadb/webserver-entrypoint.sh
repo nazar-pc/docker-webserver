@@ -53,7 +53,7 @@ set -- $@ --bind_address=127.0.0.1 --wsrep_cluster_address=gcomm:// --wsrep_on=O
 . /docker-entrypoint-init.sh
 
 # If this is not the only instance of the service - do not use /var/lib/mysql
-first_node="`grep -P \"\w+${SERVICE_NAME}_1$\" /etc/hosts | awk '{ print $2 }'`"
+first_node="`grep -P \"\w+_${SERVICE_NAME}_1$\" /etc/hosts | awk '{ print $2; exit }'`"
 if [ "$first_node" ]; then
 	if [ -L /var/lib/mysql_local ]; then
 		# Change link to local directory to avoid unavoidable conflicts with first node
