@@ -14,4 +14,6 @@ RUN \
 COPY consul-dns.sh /
 COPY webserver-entrypoint.sh /
 
+ENV CONSUL_SERVICE=consul
+
 ENTRYPOINT ["/webserver-entrypoint.sh"]

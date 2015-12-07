@@ -35,4 +35,8 @@ VOLUME \
 	/etc/consul.d \
 	/var/lib/consul
 
+ENV \
+	CONSUL_SERVICE=consul \
+	MIN_SERVERS=1
+
 ENTRYPOINT ["/webserver-entrypoint.sh"]

@@ -28,7 +28,10 @@ RUN \
 COPY consul-dns.sh /
 COPY webserver-entrypoint.sh /
 
-ENV TERM=xterm
+ENV \
+	CONSUL_SERVICE=consul \
+
+	TERM=xterm
 
 VOLUME \
 	/data \

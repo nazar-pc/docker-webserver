@@ -29,6 +29,8 @@ VOLUME \
 	/data \
 	/usr/local/etc
 
+ENV CONSUL_SERVICE=consul
+
 ENTRYPOINT ["/webserver-entrypoint.sh"]
 
 CMD ["php-fpm"]

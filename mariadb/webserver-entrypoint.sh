@@ -14,10 +14,6 @@ if [ ! -d /data/mysql ]; then
 	chown -R 1000:1000 /data/mysql
 fi
 
-if [ ! "$SERVICE_NAME" ]; then
-	SERVICE_NAME='mariadb'
-fi
-
 if [ ! -f /data/mysql/root_password ]; then
 	pwgen -s 30 1 > /data/mysql/root_password
 fi

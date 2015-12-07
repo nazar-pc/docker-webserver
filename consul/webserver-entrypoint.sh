@@ -29,17 +29,9 @@ echo "{\"recursors\": [$recursors]}" > /etc/consul.d/recursors.json
 # Allow to resolve services without `service.consul` suffix and put localhost as first nameserver
 echo -e "search service.consul\nnameserver 127.0.0.1\n`cat /etc/resolv.conf`" > /etc/resolv.conf
 
-if [ ! "$CONSUL_SERVICE" ]; then
-	CONSUL_SERVICE='consul'
-fi
-
 if [ ! "$SERVICES" ]; then
 	echo 'SERVICES environmental variable not specified, aborted'
 	exit
-fi
-
-if [ ! "$MIN_SERVERS" ]; then
-	MIN_SERVERS=1
 fi
 
 # Watch for /etc/hosts file changes and keep configuration up to date

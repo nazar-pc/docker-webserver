@@ -1,9 +1,5 @@
 #!/bin/bash
 
-if [ ! "$CONSUL_SERVICE" ]; then
-	CONSUL_SERVICE='consul'
-fi
-
 original_resolv_conf=`cat /etc/resolv.conf`
 # If consul service specified - we have DNS server there and need to watch for /etc/hosts file changes and keep /etc/resolv.conf up to date
 while [ true ]; do

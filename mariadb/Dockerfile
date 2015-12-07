@@ -47,6 +47,8 @@ VOLUME \
 	/var/lib/mysql \
 	/var/log/mysql
 
+ENV SERVICE_NAME=mariadb
+
 ENTRYPOINT ["/webserver-entrypoint.sh"]
 
 CMD ["mysqld"]

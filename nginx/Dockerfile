@@ -31,6 +31,8 @@ VOLUME \
 	/usr/share/nginx/html \
 	/var/log/nginx
 
+ENV CONSUL_SERVICE=consul
+
 ENTRYPOINT ["/webserver-entrypoint.sh"]
 
 CMD ["nginx", "-g", "daemon off;"]
