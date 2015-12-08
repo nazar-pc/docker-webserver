@@ -28,8 +28,6 @@ RUN \
 COPY config.json /etc/consul.d_dist/config.json
 COPY webserver-entrypoint.sh /
 
-ENV GOMAXPROCS 2
-
 VOLUME \
 	/data \
 	/etc/consul.d \
@@ -37,6 +35,7 @@ VOLUME \
 
 ENV \
 	CONSUL_SERVICE=consul \
-	MIN_SERVERS=1
+	MIN_SERVERS=1 \
+	GOMAXPROCS=2
 
 ENTRYPOINT ["/webserver-entrypoint.sh"]

@@ -46,7 +46,7 @@ fi
 # Initialize MariaDB using entrypoint from original image without last line
 params_before="$@ --wsrep_sst_method=xtrabackup-v2 --wsrep_sst_auth=root:$MYSQL_ROOT_PASSWORD"
 set -- $@ --bind_address=127.0.0.1 --wsrep_cluster_address=gcomm:// --wsrep_on=OFF
-. /docker-entrypoint-init.sh
+source /docker-entrypoint-init.sh
 
 # If this is not the only instance of the service - do not use /var/lib/mysql
 first_node="`grep -P \"\w+_${SERVICE_NAME}_1$\" /etc/hosts | awk '{ print $2; exit }'`"
@@ -57,7 +57,7 @@ if [ "$first_node" ]; then
 		mkdir /var/lib/mysql_local
 		# Initialize MariaDB using entrypoint from original image without last line
 		set -- $@ --bind_address=127.0.0.1 --wsrep_cluster_address=gcomm:// --wsrep_on=OFF
-		. /docker-entrypoint-init.sh
+		source /docker-entrypoint-init.sh
 	fi
 	while [[ ! `mysqladmin --host=$first_node --user=root --password=$MYSQL_ROOT_PASSWORD ping` ]]; do
 		echo 'Waiting for the first node to be ready'
