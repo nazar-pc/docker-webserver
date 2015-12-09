@@ -1,11 +1,11 @@
 #!/bin/bash
 
-if [ ! -f /etc/mysql/my.cnf ]; then
+if [ ! -e /etc/mysql/my.cnf ]; then
 	cp -a /etc/mysql_dist/* /etc/mysql/
 	chown -R 1000:1000 /etc/mysql
 fi
 
-if [ ! -d /data/mysql ]; then
+if [ ! -e /data/mysql ]; then
 	mkdir -p /data/mysql
 	chown 1000:1000 /data
 	ln -s /etc/mysql /data/mysql/config
@@ -14,7 +14,7 @@ if [ ! -d /data/mysql ]; then
 	chown -R 1000:1000 /data/mysql
 fi
 
-if [ ! -f /data/mysql/root_password ]; then
+if [ ! -e /data/mysql/root_password ]; then
 	pwgen -s 30 1 > /data/mysql/root_password
 fi
 
@@ -23,7 +23,7 @@ echo "MySQL root password (from /data/mysql/root_password): $MYSQL_ROOT_PASSWORD
 
 # Upgrade MariaDB server to MariaDB Galera server
 # TODO remove this block in future, it is here for smooth upgrade from older configurations
-if [ ! -f /etc/mysql/galera.cfg ]; then
+if [ ! -e /etc/mysql/galera.cfg ]; then
 	echo 'Regular MariaDB server setup detected'
 	mysqld --wsrep_on=OFF &
 	while [ ! "`ps -A | grep mysqld`" ]; do
@@ -80,7 +80,7 @@ fi
 
 set -- $params_before
 
-if [ -f /data/mysql/before_start.sh ]; then
+if [ -e /data/mysql/before_start.sh ]; then
 	bash /data/mysql/before_start.sh
 else
 	touch /data/mysql/before_start.sh

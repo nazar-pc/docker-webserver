@@ -1,12 +1,12 @@
 #!/bin/bash
 set -e
 
-if [ ! -f /etc/nginx/nginx.conf ]; then
+if [ ! -e /etc/nginx/nginx.conf ]; then
 	cp -a /etc/nginx_dist/* /etc/nginx/
 	chown -R 1000:1000 /etc/nginx
 fi
 
-if [ ! -d /data/nginx ]; then
+if [ ! -e /data/nginx ]; then
 	mkdir -p /data/nginx
 	chown 1000:1000 /data
 	ln -s /etc/nginx /data/nginx/config
@@ -22,7 +22,7 @@ if [ "${1:0:1}" = '-' ]; then
 	set -- nginx "$@"
 fi
 
-if [ -f /data/nginx/before_start.sh ]; then
+if [ -e /data/nginx/before_start.sh ]; then
 	bash /data/nginx/before_start.sh
 else
 	touch /data/nginx/before_start.sh

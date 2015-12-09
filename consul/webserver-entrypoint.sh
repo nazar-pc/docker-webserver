@@ -1,12 +1,12 @@
 #!/bin/bash
 set -e
 
-if [ ! -f /etc/consul.d/config.json ]; then
+if [ ! -e /etc/consul.d/config.json ]; then
 	cp -a /etc/consul.d_dist/* /etc/consul.d/
 	chown -R 1000:1000 /etc/consul.d
 fi
 
-if [ ! -d /data/consul ]; then
+if [ ! -e /data/consul ]; then
 	mkdir -p /data/consul
 	chown 1000:1000 /data
 	ln -s /etc/consul.d /data/consul/config
