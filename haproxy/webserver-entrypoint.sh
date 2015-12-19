@@ -17,7 +17,7 @@ function update-configuration {
 	cp $config_file.dist $config_file
 	for service_port in `echo $SERVICE_PORTS | tr ','  ' '`; do
 		echo -e "listen $SERVICE_NAME-$service_port\n\tmode tcp\n\tbind 0.0.0.0:$service_port" >> $config_file
-		grep -P "\w+_${SERVICE_NAME}_\d+$" /etc/hosts | while read service; do
+		grep -P "[^_\s]_${SERVICE_NAME}_\d+$" /etc/hosts | while read service; do
 			service_id=`echo $service | awk '{ print $2 }'`
 			service_ip=`echo $service | awk '{ print $1 }'`
 			echo -e "\tserver $service_id $service_ip:$service_port" >> $config_file

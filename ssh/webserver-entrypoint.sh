@@ -1,6 +1,12 @@
 #!/bin/bash
 set -e
 
+/consul-dns.sh &
+
+/ceph-mount.sh \
+	/data \
+	/etc/ssh
+
 if [ ! -e /data/.ssh ]; then
 	mkdir -p /data/.ssh
 	chown 1000:1000 /data
@@ -11,8 +17,6 @@ if [ ! -e /data/ssh ]; then
 	chown 1000:1000 /data
 	ln -s /etc/ssh /data/ssh/config
 fi
-
-/consul-dns.sh &
 
 if [ ! -e /etc/ssh/sshd_config ]; then
 	cp -a /etc/ssh_dist/* /etc/ssh/

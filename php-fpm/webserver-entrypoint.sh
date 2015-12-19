@@ -1,14 +1,18 @@
 #!/bin/bash
 set -e
 
+/consul-dns.sh &
+
+/ceph-mount.sh \
+	/data \
+	/usr/local/etc
+
 if [ ! -e /data/php ]; then
 	mkdir -p /data/php
 	chown 1000:1000 /data
 	chown -R 1000:1000 /data/php
 	ln -s /usr/local/etc /data/php/config
 fi
-
-/consul-dns.sh &
 
 # if command starts with an option, prepend php-fpm
 if [ "${1:0:1}" = '-' ]; then

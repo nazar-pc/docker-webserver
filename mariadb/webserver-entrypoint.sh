@@ -1,5 +1,12 @@
 #!/bin/bash
 
+/consul-dns.sh &
+
+/ceph-mount.sh \
+	/data \
+	/etc/mysql \
+	/var/lib/mysql
+
 if [ ! -e /etc/mysql/my.cnf ]; then
 	cp -a /etc/mysql_dist/* /etc/mysql/
 	chown -R 1000:1000 /etc/mysql
@@ -49,7 +56,7 @@ set -- $@ --bind_address=127.0.0.1 --wsrep_cluster_address=gcomm:// --wsrep_on=O
 source /docker-entrypoint-init.sh
 
 # If this is not the only instance of the service - do not use /var/lib/mysql
-first_node="`grep -P \"\w+_${SERVICE_NAME}_1$\" /etc/hosts | awk '{ print $2; exit }'`"
+first_node="`grep -P \"[^_\s]_${SERVICE_NAME}_1$\" /etc/hosts | awk '{ print $2; exit }'`"
 if [ "$first_node" ]; then
 	if [ -L /var/lib/mysql_local ]; then
 		# Change link to local directory to avoid unavoidable conflicts with first node
@@ -59,7 +66,7 @@ if [ "$first_node" ]; then
 		set -- $@ --bind_address=127.0.0.1 --wsrep_cluster_address=gcomm:// --wsrep_on=OFF
 		source /docker-entrypoint-init.sh
 	fi
-	while [[ ! `mysqladmin --host=$first_node --user=root --password=$MYSQL_ROOT_PASSWORD ping` ]]; do
+	while ! mysqladmin --host=$first_node --user=root --password=$MYSQL_ROOT_PASSWORD ping; do
 		echo 'Waiting for the first node to be ready'
 		sleep 1
 	done
@@ -70,11 +77,11 @@ else
 	while read service; do
 		service_ip=`echo $service | awk '{ print $1 }'`
 		# Check if node is ready
-		if [[ `mysqladmin --host=$service_ip --user=root --password=$MYSQL_ROOT_PASSWORD ping` ]]; then
+		if mysqladmin --host=$service_ip --user=root --password=$MYSQL_ROOT_PASSWORD ping; then
 			target_node=$service_ip
 			break
 		fi
-	done <<< "`grep -P "\w+_${SERVICE_NAME}_\d+$" /etc/hosts`"
+	done <<< "`grep -P "[^_\s]_${SERVICE_NAME}_\d+$" /etc/hosts`"
 	params_before="$params_before --wsrep_cluster_address=gcomm://$target_node"
 fi
 

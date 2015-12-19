@@ -50,7 +50,7 @@ if [[ "$1" == 'osd' && "$OSD_TYPE" == 'directory' ]]; then
 			# Directory might be named in any way, so lets add symlink with normalized path
 			if [ "$OSD_ID" ]; then
 				# If OSD id was specified, but is known yet, so lets create OSD with specified id
-				if [[ ! `ceph --cluster $CLUSTER osd find $OSD_ID` ]]; then
+				if ! ceph --cluster $CLUSTER osd find $OSD_ID; then
 					ceph --cluster $CLUSTER osd create `uuidgen` $OSD_ID
 				fi
 			else

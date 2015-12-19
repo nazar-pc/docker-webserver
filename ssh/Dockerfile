@@ -12,6 +12,14 @@ RUN \
 	apt-get update && \
 	apt-get upgrade -y && \
 	apt-get install -y curl git mc wget php5-cli && \
+
+# Ceph repository for up to date version of ceph-fuse package; Ceph itself is used as cluster filesystem
+
+	CEPH_VERSION=infernalis && \
+	curl -sSL 'https://download.ceph.com/keys/release.asc' | apt-key add - && \
+	echo "deb http://ceph.com/debian-$CEPH_VERSION/ jessie main" > /etc/apt/sources.list.d/ceph-$CEPH_VERSION.list && \
+	apt-get install -y --no-install-recommends ceph-fuse && \
+
 	apt-get clean && \
 	rm -rf /var/lib/apt/lists/* && \
 
@@ -30,11 +38,15 @@ RUN \
 	COMPOSER_VERSION=1.0.0-alpha11 && \
 	curl -sS https://getcomposer.org/installer | php -- --install-dir=/usr/local/bin --filename=composer --version=$COMPOSER_VERSION
 
+COPY ceph-mount.sh /
 COPY consul-dns.sh /
 COPY webserver-entrypoint.sh /
 
 ENV \
 	CONSUL_SERVICE=consul \
+
+	CEPH_MON_SERVICE=ceph-mon \
+	CEPHFS_MOUNT=0 \
 
 	TERM=xterm
 

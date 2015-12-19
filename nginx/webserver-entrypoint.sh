@@ -1,6 +1,13 @@
 #!/bin/bash
 set -e
 
+/consul-dns.sh &
+
+/ceph-mount.sh \
+	/data \
+	/etc/nginx \
+	/usr/share/nginx/html
+
 if [ ! -e /etc/nginx/nginx.conf ]; then
 	cp -a /etc/nginx_dist/* /etc/nginx/
 	chown -R 1000:1000 /etc/nginx
@@ -14,8 +21,6 @@ if [ ! -e /data/nginx ]; then
 	ln -s /usr/share/nginx/html /data/nginx/www
 	chown -R 1000:1000 /data/nginx
 fi
-
-/consul-dns.sh &
 
 # if command starts with an option, prepend nginx
 if [ "${1:0:1}" = '-' ]; then

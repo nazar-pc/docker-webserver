@@ -15,6 +15,16 @@ RUN \
 	apt-get update && \
 	apt-get upgrade -y && \
 	apt-get install -y mariadb-galera-server=$MARIADB_VERSION percona-xtrabackup inotify-tools socat pwgen && \
+
+# Ceph repository for up to date version of ceph-fuse package; Ceph itself is used as cluster filesystem
+
+	CEPH_VERSION=infernalis && \
+	apt-get install -y --no-install-recommends curl ca-certificates && \
+	curl -sSL 'https://download.ceph.com/keys/release.asc' | apt-key add - && \
+	echo "deb http://ceph.com/debian-$CEPH_VERSION/ jessie main" > /etc/apt/sources.list.d/ceph-$CEPH_VERSION.list && \
+	apt-get install -y --no-install-recommends ceph-fuse && \
+	apt-get purge --auto-remove -y curl ca-certificates && \
+
 	apt-get clean && \
 	rm -rf /var/lib/apt/lists/* && \
 
@@ -38,6 +48,8 @@ RUN \
 	sed 's/exec "$@"//g' /docker-entrypoint.sh > /docker-entrypoint-init.sh && \
 	chmod +x /docker-entrypoint-init.sh
 
+COPY ceph-mount.sh /
+COPY consul-dns.sh /
 COPY galera.cnf /etc/mysql_dist/galera.cfg
 COPY webserver-entrypoint.sh /
 
@@ -47,7 +59,13 @@ VOLUME \
 	/var/lib/mysql \
 	/var/log/mysql
 
-ENV SERVICE_NAME=mariadb
+ENV \
+	CONSUL_SERVICE=consul \
+
+	CEPH_MON_SERVICE=ceph-mon \
+	CEPHFS_MOUNT=0 \
+
+	SERVICE_NAME=mariadb
 
 ENTRYPOINT ["/webserver-entrypoint.sh"]
 
