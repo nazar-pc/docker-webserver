@@ -7,11 +7,11 @@ RUN \
 
 	rm -f /etc/service/sshd/down && \
 
-# Upgrade system and install curl, git, mc and wget
+# Upgrade system and install curl, git, mc, wget and php-cli of course:)
 
 	apt-get update && \
 	apt-get upgrade -y && \
-	apt-get install -y curl git mc wget && \
+	apt-get install -y curl git mc wget php5-cli && \
 	apt-get clean && \
 	rm -rf /var/lib/apt/lists/* && \
 
@@ -23,7 +23,12 @@ RUN \
 
 # Rename SSH config directory
 
-	mv /etc/ssh /etc/ssh_dist
+	mv /etc/ssh /etc/ssh_dist && \
+
+# Install Composer
+
+	COMPOSER_VERSION=1.0.0-alpha11 && \
+	curl -sS https://getcomposer.org/installer | php -- --install-dir=/usr/local/bin --filename=composer --version=$COMPOSER_VERSION
 
 COPY consul-dns.sh /
 COPY webserver-entrypoint.sh /
