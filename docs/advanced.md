@@ -67,16 +67,18 @@ consul:
   image: nazarpc/webserver:consul
   environment:
     CONSUL_SERVICE: consul
-    SERVICES: nginx-haproxy:nginx, mariadb, mariadb:mysql
+    SERVICES: nginx-haproxy:nginx, mariadb:mysql
     MIN_SERVERS: 1
 ...
 ```
 * `CONSUL_SERVICE` - OPTIONAL (defaults to `consul`), in this variable you should specify the same name as you name Consul service (you can in fact have multiple Consul services)
-* `SERVICES` - REQUIRED, coma and/or space-separated list of services that Consul should provide through DNS with optional alias specified after colon
+* `SERVICES` - OPTIONAL, coma and/or space-separated list of services that Consul should provide through DNS with alias specified after colon
 * `MIN_SERVERS` - OPTIONAL (defaults to `1`), Consul-specific feature (`-bootstrap-expect` CLI argument), if specified - Consul will wait until scaled to at least `MIN_SERVERS` before building cluster
 
 In example above we have Consul node that will resolve all `nginx-haproxy` containers, no matter how may of them you have, by `nginx` host name, so you can call `ping nginx` in any other container and you'll get one of `nginx-haproxy` containers under the hood.
-The same about `mariadb` containers - you can resolve them by either `mariadb` or `mysql` host names, since we've specified 2 aliases.
+The same about `mariadb` container - you can resolve them by `mysql` host name.
+
+All containers defined in `docker-compose.yml` file are captured automatically, so there is no need to write `nginx-haproxy:nginx-haproxy` or `mariadb:mariadb` - it just works out of the box.
 
 Consul instance is not a regular instance, it is cluster of 1 node, so you can scale cluster it to as many nodes as you need and they will all connect to each other and build single cluster.
 

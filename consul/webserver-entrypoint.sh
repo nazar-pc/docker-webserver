@@ -29,11 +29,6 @@ echo "{\"recursors\": [$recursors]}" > /etc/consul.d/recursors.json
 # Allow to resolve services without `service.consul` suffix and put localhost as first nameserver
 echo -e "search service.consul\nnameserver 127.0.0.1\n`cat /etc/resolv.conf`" > /etc/resolv.conf
 
-if [ ! "$SERVICES" ]; then
-	echo 'SERVICES environmental variable not specified, aborted'
-	exit
-fi
-
 # Watch for /etc/hosts file changes and keep configuration up to date
 function maintain-configuration {
 	update-configuration
@@ -46,20 +41,32 @@ function maintain-configuration {
 # Update configuration on /etc/hosts file changes
 function update-configuration {
 	rm -f /etc/consul.d/service-*
+	# Automatically capture services with pattern `project_service_#`, where `project` is project name and `#` is instance number
+	while read service; do
+		grep -Po "[^_]+_\K(.*)_\d+$" /etc/hosts | sed -r s/_[0-9]+$//
+		if [[ "$service" && "$service" != "$CONSUL_SERVICE" ]]; then
+			service_name=`echo $service | grep -Po "[^_]+_\K(.*)_\d+$" - | sed -r s/_[0-9]+$//`
+			service_id=`echo $service | awk '{ print $2 }'`
+			service_ip=`echo $service | awk '{ print $1 }'`
+			echo "{\"service\": {\"id\": \"$service_name-$service_id\", \"name\": \"$service_name\", \"address\": \"$service_ip\"}}" > /etc/consul.d/service-$service_name-$service_name.json
+		fi
+	done <<< "`grep -P "[^_\s]+_\K(.*)_\d+$" /etc/hosts`"
+	# Capture services specified explicitly
 	for service in `echo $SERVICES | tr ','  ' '`; do
 		service=`echo $service | tr ':'  ' '`
 		service_name=`echo $service | awk '{ print $1 }'`
 		service_alias=`echo $service | awk '{ print $2 }'`
 		if [ ! "$service_alias" ]; then
-			service_alias="$service_name"
+			echo "Alias for service $service_name not specified, skipping it"
+			continue
 		fi
 		while read service; do
 			if [ "$service" ]; then
 				service_id=`echo $service | awk '{ print $2 }'`
 				service_ip=`echo $service | awk '{ print $1 }'`
-				echo "{\"service\": {\"id\": \"$service_id-$service_alias\", \"name\": \"$service_alias\", \"address\": \"$service_ip\"}}" > /etc/consul.d/service-$service_name-$service_alias.json
+				echo "{\"service\": {\"id\": \"$service_alias-$service_id\", \"name\": \"$service_alias\", \"address\": \"$service_ip\"}}" > /etc/consul.d/service-$service_name-$service_alias.json
 			fi
-		done <<< "`grep -P "\w+_${service_name}_\d+$" /etc/hosts`"
+		done <<< "`grep -P "[^_\s]_${service_name}_\d+$" /etc/hosts`"
 	done
 }
 
