@@ -48,7 +48,7 @@ function update-configuration {
 			service_name=`echo $service | grep -Po "[^_]+_\K(.*)_\d+$" - | sed -r s/_[0-9]+$//`
 			service_id=`echo $service | awk '{ print $2 }'`
 			service_ip=`echo $service | awk '{ print $1 }'`
-			echo "{\"service\": {\"id\": \"$service_name-$service_id\", \"name\": \"$service_name\", \"address\": \"$service_ip\"}}" > /etc/consul.d/service-$service_name-$service_name.json
+			echo "{\"service\": {\"id\": \"$service_name-$service_id\", \"name\": \"$service_name\", \"address\": \"$service_ip\"}}" > /etc/consul.d/service-$service_name-$service_name-$service_id.json
 		fi
 	done <<< "`grep -P "[^_\s]+_\K(.*)_\d+$" /etc/hosts`"
 	# Capture services specified explicitly
@@ -64,7 +64,7 @@ function update-configuration {
 			if [ "$service" ]; then
 				service_id=`echo $service | awk '{ print $2 }'`
 				service_ip=`echo $service | awk '{ print $1 }'`
-				echo "{\"service\": {\"id\": \"$service_alias-$service_id\", \"name\": \"$service_alias\", \"address\": \"$service_ip\"}}" > /etc/consul.d/service-$service_name-$service_alias.json
+				echo "{\"service\": {\"id\": \"$service_alias-$service_id\", \"name\": \"$service_alias\", \"address\": \"$service_ip\"}}" > /etc/consul.d/service-$service_name-$service_alias-$service_id.json
 			fi
 		done <<< "`grep -P "[^_\s]_${service_name}_\d+$" /etc/hosts`"
 	done
