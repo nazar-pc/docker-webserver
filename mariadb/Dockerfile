@@ -14,7 +14,7 @@ RUN \
 	} | debconf-set-selections && \
 	apt-get update && \
 	apt-get upgrade -y && \
-	apt-get install -y mariadb-galera-server=$MARIADB_VERSION percona-xtrabackup inotify-tools socat pwgen && \
+	apt-get install -y mariadb-galera-server percona-xtrabackup inotify-tools socat pwgen && \
 
 # Ceph repository for up to date version of ceph-fuse package; Ceph itself is used as cluster filesystem
 
