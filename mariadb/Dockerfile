@@ -9,26 +9,28 @@ RUN \
 
 	apt-get update && \
 	apt-get upgrade -y && \
-	apt-get install -y inotify-tools socat pwgen wget && \
+	apt-get install -y inotify-tools socat pwgen && \
 
 # Percona repository for fresh version of percona-xtrabackup because version from repository doesn't support MariaDB 10.1
 
-	wget https://repo.percona.com/apt/percona-release_0.1-3.jessie_all.deb && \
-	dpkg -i percona-release_0.1-3.jessie_all.deb && \
-	rm percona-release_0.1-3.jessie_all.deb && \
+	PERCONA_PACKAGE=percona-release_0.1-3.jessie_all.deb && \
+	apt-get install -y --no-install-recommends wget ca-certificates && \
+	wget https://repo.percona.com/apt/$PERCONA_PACKAGE && \
+	apt-get purge -y --auto-remove wget ca-certificates && \
+	dpkg -i $PERCONA_PACKAGE && \
+	rm $PERCONA_PACKAGE && \
 	apt-get update && \
 	apt-get install -y percona-xtrabackup && \
-	apt-get purge -y --auto-remove wget && \
 
 # Ceph repository for up to date version of ceph-fuse package; Ceph itself is used as cluster filesystem
 
 	CEPH_VERSION=infernalis && \
 	apt-get install -y --no-install-recommends curl ca-certificates && \
 	curl -sSL 'https://download.ceph.com/keys/release.asc' | apt-key add - && \
+	apt-get purge -y --auto-remove curl ca-certificates && \
 	echo "deb http://ceph.com/debian-$CEPH_VERSION/ jessie main" > /etc/apt/sources.list.d/ceph-$CEPH_VERSION.list && \
 	apt-get update && \
 	apt-get install -y --no-install-recommends ceph-fuse && \
-	apt-get purge -y --auto-remove curl ca-certificates && \
 
 	apt-get clean && \
 	rm -rf /var/lib/apt/lists/* && \
