@@ -17,7 +17,7 @@ RUN \
 	unzip -d /ui /tmp/consul-ui.zip && \
 	rm /tmp/consul* && \
 
-	apt-get purge --auto-remove -y curl ca-certificates unzip && \
+	apt-get purge -y --auto-remove curl ca-certificates unzip && \
 
 	mkdir /etc/consul.d_dist && \
 

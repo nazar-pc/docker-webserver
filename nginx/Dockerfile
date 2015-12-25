@@ -17,7 +17,7 @@ RUN \
 	echo "deb http://ceph.com/debian-$CEPH_VERSION/ jessie main" > /etc/apt/sources.list.d/ceph-$CEPH_VERSION.list && \
 	apt-get update && \
 	apt-get install -y --no-install-recommends ceph-fuse && \
-	apt-get purge --auto-remove -y curl ca-certificates && \
+	apt-get purge -y --auto-remove curl ca-certificates && \
 
 	apt-get clean && \
 	rm -rf /var/lib/apt/lists/* && \

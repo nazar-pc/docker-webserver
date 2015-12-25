@@ -1,20 +1,24 @@
-FROM mariadb:10
+FROM mariadb:10.1
 MAINTAINER Nazar Mokrynskyi <nazar@mokrynskyi.com>
 
 RUN \
 
-# Also we'll install MariaDB Gallera server instead of regular in order to be able to build cluster afterwards
-# percona-xtrabackup and socat packages contain innobackupex and socat apps that are necessary for Snapshot State Transfer
+# percona-xtrabackup and socat packages contain innobackupex and socat apps that are necessary for Snapshot State Transfer (for initial replication)
 # We'll need inotify-tools package to watch for files changes
-# Upgrade system and install pwgen, which we'll use to generate password
+# We'll use pwgen to generate password
 
-	{ \
-		echo mariadb-server-$MARIADB_MAJOR mysql-server/root_password password 'unused'; \
-		echo mariadb-server-$MARIADB_MAJOR mysql-server/root_password_again password 'unused'; \
-	} | debconf-set-selections && \
 	apt-get update && \
 	apt-get upgrade -y && \
-	apt-get install -y mariadb-galera-server percona-xtrabackup inotify-tools socat pwgen && \
+	apt-get install -y inotify-tools socat pwgen wget && \
+
+# Percona repository for fresh version of percona-xtrabackup because version from repository doesn't support MariaDB 10.1
+
+	wget https://repo.percona.com/apt/percona-release_0.1-3.jessie_all.deb && \
+	dpkg -i percona-release_0.1-3.jessie_all.deb && \
+	rm percona-release_0.1-3.jessie_all.deb && \
+	apt-get update && \
+	apt-get install -y percona-xtrabackup && \
+	apt-get purge -y --auto-remove wget && \
 
 # Ceph repository for up to date version of ceph-fuse package; Ceph itself is used as cluster filesystem
 
@@ -24,7 +28,7 @@ RUN \
 	echo "deb http://ceph.com/debian-$CEPH_VERSION/ jessie main" > /etc/apt/sources.list.d/ceph-$CEPH_VERSION.list && \
 	apt-get update && \
 	apt-get install -y --no-install-recommends ceph-fuse && \
-	apt-get purge --auto-remove -y curl ca-certificates && \
+	apt-get purge -y --auto-remove curl ca-certificates && \
 
 	apt-get clean && \
 	rm -rf /var/lib/apt/lists/* && \
