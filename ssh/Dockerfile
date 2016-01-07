@@ -17,7 +17,7 @@ RUN \
 
 	CEPH_VERSION=infernalis && \
 	curl -sSL 'https://download.ceph.com/keys/release.asc' | apt-key add - && \
-	echo "deb http://ceph.com/debian-$CEPH_VERSION/ jessie main" > /etc/apt/sources.list.d/ceph-$CEPH_VERSION.list && \
+	echo "deb http://ceph.com/debian-$CEPH_VERSION/ trusty main" > /etc/apt/sources.list.d/ceph-$CEPH_VERSION.list && \
 	apt-get update && \
 	apt-get install -y --no-install-recommends ceph-fuse && \
 
