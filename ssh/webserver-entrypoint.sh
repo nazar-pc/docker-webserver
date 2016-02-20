@@ -7,14 +7,10 @@ set -e
 	/data \
 	/etc/ssh
 
-if [ ! -e /data/.ssh ]; then
-	mkdir -p /data/.ssh
-	chown 1000:1000 /data
-fi
+mkdir -p /data/{ssh,.ssh}
+chown 1000:1000 /data
 
-if [ ! -e /data/ssh ]; then
-	mkdir -p /data/ssh
-	chown 1000:1000 /data
+if [ ! -e /etc/ssh/config ]; then
 	ln -s /etc/ssh /data/ssh/config
 fi
 
