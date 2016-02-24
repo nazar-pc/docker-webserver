@@ -56,7 +56,7 @@ set -- $@ --bind_address=127.0.0.1 --wsrep_cluster_address=gcomm:// --wsrep_on=O
 source /docker-entrypoint-init.sh
 
 # If this is not the only instance of the service - do not use /var/lib/mysql
-first_node="`grep -P \"[^_\s]_${SERVICE_NAME}_1$\" /etc/hosts | awk '{ print $2; exit }'`"
+first_node="`grep -P \"[^_\s]_${SERVICE_NAME}_1$\" /etc/hosts | awk '{ print $2; exit }' || true`"
 if [ "$first_node" ]; then
 	if [ -L /var/lib/mysql_local ]; then
 		# Change link to local directory to avoid unavoidable conflicts with first node
@@ -76,10 +76,12 @@ else
 	target_node=''
 	while read service; do
 		service_ip=`echo $service | awk '{ print $1 }'`
-		# Check if node is ready
-		if mysqladmin --host=$service_ip --user=root --password=$MYSQL_ROOT_PASSWORD ping; then
-			target_node=$service_ip
-			break
+		if [ "$service_ip" ]; then
+			# Check if node is ready
+			if mysqladmin --host=$service_ip --user=root --password=$MYSQL_ROOT_PASSWORD ping; then
+				target_node=$service_ip
+				break
+			fi
 		fi
 	done <<< "`grep -P "[^_\s]_${SERVICE_NAME}_\d+$" /etc/hosts`"
 	params_before="$params_before --wsrep_cluster_address=gcomm://$target_node"

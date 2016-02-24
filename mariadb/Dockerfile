@@ -9,7 +9,7 @@ RUN \
 
 	apt-get update && \
 	apt-get upgrade -y && \
-	apt-get install -y inotify-tools socat pwgen && \
+	apt-get install -y inotify-tools socat && \
 
 # Percona repository for fresh version of percona-xtrabackup because version from repository doesn't support MariaDB 10.1
 
