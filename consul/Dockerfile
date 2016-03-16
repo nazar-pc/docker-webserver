@@ -3,7 +3,7 @@ MAINTAINER Nazar Mokrynskyi <nazar@mokrynskyi.com>
 
 RUN \
 
-	CONSUL_VERSION=0.6.3 && \
+	CONSUL_VERSION=0.6.4 && \
 
 	apt-get update && \
 	apt-get upgrade -y && \
