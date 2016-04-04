@@ -22,7 +22,7 @@ RUN \
 
 # Change PHP-FPM user
 
-	sed -i 's/www-data/git/g' /usr/local/etc/php-fpm.conf && \
+	sed -i 's/www-data/git/g' /usr/local/etc/php-fpm.d/www.conf && \
 
 # Create group and user for PHP-FPM
 
