@@ -7,11 +7,11 @@ RUN \
 
 	rm -f /etc/service/sshd/down && \
 
-# Upgrade system and install curl, git, mc, wget and php-cli of course:)
+# Upgrade system and install inotify-tools, curl, git, mc, wget and php-cli of course:)
 
 	apt-get update && \
 	apt-get upgrade -y && \
-	apt-get install -y curl git mc wget php5-cli && \
+	apt-get install -y inotify-tools curl git mc wget php5-cli && \
 
 # Ceph repository for up to date version of ceph-fuse package; Ceph itself is used as cluster filesystem
 
