@@ -3,24 +3,11 @@ MAINTAINER Nazar Mokrynskyi <nazar@mokrynskyi.com>
 
 RUN \
 
-# percona-xtrabackup and socat packages contain innobackupex and socat apps that are necessary for Snapshot State Transfer (for initial replication)
 # We'll need inotify-tools package to watch for files changes
-# We'll use pwgen to generate password
 
 	apt-get update && \
 	apt-get upgrade -y && \
-	apt-get install -y inotify-tools socat && \
-
-# Percona repository for fresh version of percona-xtrabackup because version from repository doesn't support MariaDB 10.1
-
-	PERCONA_PACKAGE=percona-release_0.1-3.jessie_all.deb && \
-	apt-get install -y --no-install-recommends wget ca-certificates && \
-	wget https://repo.percona.com/apt/$PERCONA_PACKAGE && \
-	apt-get purge -y --auto-remove wget ca-certificates && \
-	dpkg -i $PERCONA_PACKAGE && \
-	rm $PERCONA_PACKAGE && \
-	apt-get update && \
-	apt-get install -y percona-xtrabackup && \
+	apt-get install -y inotify-tools && \
 
 # Ceph repository for up to date version of ceph-fuse package; Ceph itself is used as cluster filesystem
 
