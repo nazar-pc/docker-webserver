@@ -39,7 +39,7 @@ RUN \
 
 # Copy original entrypoint without exec call in order to use it as MariaDB initialization script
 
-	sed 's/exec "$@"//g' /docker-entrypoint.sh > /docker-entrypoint-init.sh && \
+	sed 's/exec "$@"//g' /usr/local/bin/docker-entrypoint.sh > /docker-entrypoint-init.sh && \
 	chmod +x /docker-entrypoint-init.sh
 
 COPY ceph-mount.sh /
