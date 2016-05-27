@@ -1,4 +1,4 @@
-FROM ceph/daemon
+FROM ceph/daemon:infernalis
 MAINTAINER Nazar Mokrynskyi <nazar@mokrynskyi.com>
 
 RUN \
