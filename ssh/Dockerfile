@@ -1,4 +1,4 @@
-FROM phusion/baseimage:0.9.18
+FROM phusion/baseimage:0.9.19
 MAINTAINER Nazar Mokrynskyi <nazar@mokrynskyi.com>
 
 RUN \
@@ -11,13 +11,13 @@ RUN \
 
 	apt-get update && \
 	apt-get upgrade -y && \
-	apt-get install -y inotify-tools curl git mc wget php5-cli && \
+	apt-get install -y inotify-tools curl git mc wget php-cli && \
 
 # Ceph repository for up to date version of ceph-fuse package; Ceph itself is used as cluster filesystem
 
 	CEPH_VERSION=infernalis && \
 	curl -sSL 'https://download.ceph.com/keys/release.asc' | apt-key add - && \
-	echo "deb http://ceph.com/debian-$CEPH_VERSION/ trusty main" > /etc/apt/sources.list.d/ceph-$CEPH_VERSION.list && \
+	echo "deb http://ceph.com/debian-$CEPH_VERSION/ xenial main" > /etc/apt/sources.list.d/ceph-$CEPH_VERSION.list && \
 	apt-get update && \
 	apt-get install -y --no-install-recommends ceph-fuse && \
 
@@ -36,7 +36,7 @@ RUN \
 
 # Install Composer
 
-	COMPOSER_VERSION=1.0.0-alpha11 && \
+	COMPOSER_VERSION=1.1.3 && \
 	curl -sS https://getcomposer.org/installer | php -- --install-dir=/usr/local/bin --filename=composer --version=$COMPOSER_VERSION
 
 COPY ceph-mount.sh /
