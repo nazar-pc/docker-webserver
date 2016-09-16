@@ -40,7 +40,15 @@ RUN \
 # Copy original entrypoint without exec call in order to use it as MariaDB initialization script
 
 	sed 's/exec "$@"//g' /usr/local/bin/docker-entrypoint.sh > /docker-entrypoint-init.sh && \
-	chmod +x /docker-entrypoint-init.sh
+	chmod +x /docker-entrypoint-init.sh && \
+
+# Restore original ids of mysql user and group they will replace existing mysql group from the image, which were changed to custom
+
+	userdel mysql && \
+	addgroup -gid 999 mysql && \
+	useradd -d /data -s /bin/bash -g 999 -u 999 mysql && \
+
+	chown -R mysql:mysql /var/lib/mysql /var/run/mysqld
 
 COPY ceph-mount.sh /
 COPY consul-dns.sh /

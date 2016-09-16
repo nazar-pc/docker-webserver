@@ -25,14 +25,14 @@ if [ ! -e /data/mysql/root_password ]; then
 	pwgen -s 30 1 > /data/mysql/root_password
 fi
 
-MYSQL_ROOT_PASSWORD=`cat /data/mysql/root_password`
+export MYSQL_ROOT_PASSWORD=`cat /data/mysql/root_password`
 echo "MySQL root password (from /data/mysql/root_password): $MYSQL_ROOT_PASSWORD"
 
 # Upgrade MariaDB server to MariaDB Galera server
 # TODO remove this block in future, it is here for smooth upgrade from older configurations
 if [ ! -e /etc/mysql/galera.cfg ]; then
 	echo 'Regular MariaDB server setup detected'
-	mysqld --wsrep_on=OFF &
+	gosu mysql mysqld --wsrep_on=OFF &
 	while [ ! "`ps -A | grep mysqld`" ]; do
 		sleep 1
 	done
@@ -53,7 +53,7 @@ fi
 # Initialize MariaDB using entrypoint from original image without last line
 params_before="$@ --wsrep_sst_method=xtrabackup-v2 --wsrep_sst_auth=root:$MYSQL_ROOT_PASSWORD"
 set -- $@ --bind_address=127.0.0.1 --wsrep_cluster_address=gcomm:// --wsrep_on=OFF
-source /docker-entrypoint-init.sh
+gosu mysql bash /docker-entrypoint-init.sh "$@"
 
 # If this is not the only instance of the service - do not use /var/lib/mysql
 first_node="`grep -P \"[^_\s]_${SERVICE_NAME}_1$\" /etc/hosts | awk '{ print $2; exit }' || true`"
@@ -64,7 +64,7 @@ if [ "$first_node" ]; then
 		mkdir /var/lib/mysql_local
 		# Initialize MariaDB using entrypoint from original image without last line
 		set -- $@ --bind_address=127.0.0.1 --wsrep_cluster_address=gcomm:// --wsrep_on=OFF
-		source /docker-entrypoint-init.sh
+		gosu mysql bash /docker-entrypoint-init.sh "%@"
 	fi
 	while ! mysqladmin --host=$first_node --user=root --password=$MYSQL_ROOT_PASSWORD ping; do
 		echo 'Waiting for the first node to be ready'
@@ -95,4 +95,4 @@ else
 	touch /data/mysql/before_start.sh
 fi
 
-exec "$@"
+exec gosu mysql "$@"
