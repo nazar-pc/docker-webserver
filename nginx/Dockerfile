@@ -26,6 +26,10 @@ RUN \
 
 	sed -i 's/user  nginx;/user  git;/g' /etc/nginx/nginx.conf && \
 
+# Make Nginx work with PHP with default config
+
+	sed -i 's/127.0.0.1:9000/php:9000/g' /etc/nginx/conf.d/default.conf && \
+
 # Create group and user for Nginx
 
 	addgroup -gid 1000 git && \
