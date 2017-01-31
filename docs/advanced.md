@@ -1,3 +1,5 @@
+# NOTE: Description below is highly experimental and might not work as expected or not work at all, DO NOT USE IN PRODUCTION!
+
 # Advanced usage
 Advanced usage includes ability to work with Docker 1.9+ Networking instead of links, ability to build cluster of multiple nodes that scale nicely and load balancing.
 

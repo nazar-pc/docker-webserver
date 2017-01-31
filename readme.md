@@ -93,7 +93,7 @@ docker-compose up -d
 
 That is it, you have whole WebServer up and running!
 
-**Also you might be interested in [advanced examples](docs/advanced.md) with load balancing, scaling and using Docker Networking feature.**
+**Also you might be interested in [advanced examples](docs/advanced.md) with load balancing and scaling across cluster.**
 
 # Upgrade
 You can easily upgrade your WebServer to new version of software.
