@@ -1,7 +1,5 @@
 #!/bin/bash
 
-/consul-dns.sh &
-
 /ceph-mount.sh \
 	/data \
 	/etc/mysql \
@@ -55,36 +53,54 @@ params_before="$@ --wsrep_sst_method=xtrabackup-v2 --wsrep_sst_auth=root:$MYSQL_
 set -- $@ --bind_address=127.0.0.1 --wsrep_cluster_address=gcomm:// --wsrep_on=OFF
 gosu mysql bash /docker-entrypoint-init.sh "$@"
 
-# If this is not the only instance of the service - do not use /var/lib/mysql
-first_node="`grep -P \"[^_\s]_${SERVICE_NAME}_1$\" /etc/hosts | awk '{ print $2; exit }' || true`"
-if [ "$first_node" ]; then
+# If this is not the master node of the service (first instance that have started) - do not use /var/lib/mysql and try to connect to the master node
+service_nodes=`dig $SERVICE_NAME a +short | sort`
+master_node=`cat /data/mysql/master_node_ip`
+if [ ! "`echo $service_nodes | grep $master_node`" ]; then
+	first_node=`echo $service_nodes | awk '{ print $1; exit }'`
+	echo "Master node $master_node not reachable, changing to the first node $first_node"
+	master_node=$first_node
+	echo $master_node > /data/mysql/master_node_ip
+fi
+if [ ! "`cat /etc/hosts | grep $master_node`" ]; then
+	echo "Starting as regular node (no synchronization to permanent storage)"
 	if [ -L /var/lib/mysql_local ]; then
-		# Change link to local directory to avoid unavoidable conflicts with first node
+		# Change link to local directory to avoid unavoidable conflicts with master node
 		rm /var/lib/mysql_local
-		mkdir /var/lib/mysql_local
+		mkdir /tmp/mysql_local
+		chown mysql:mysql /tmp/mysql_local
+		ln -s /tmp/mysql_local /var/lib/mysql_local
 		# Initialize MariaDB using entrypoint from original image without last line
 		set -- $@ --bind_address=127.0.0.1 --wsrep_cluster_address=gcomm:// --wsrep_on=OFF
 		gosu mysql bash /docker-entrypoint-init.sh "%@"
 	fi
-	while ! mysqladmin --host=$first_node --user=root --password=$MYSQL_ROOT_PASSWORD ping; do
-		echo 'Waiting for the first node to be ready'
+	if ! mysqladmin --host=$master_node --user=root --password=$MYSQL_ROOT_PASSWORD ping; then
+		echo 'Master node is not ready, exiting'
 		sleep 1
-	done
-	params_before="$params_before --wsrep_cluster_address=gcomm://$first_node"
+	fi
+	params_before="$params_before --wsrep_cluster_address=gcomm://$master_node"
 else
+	echo "Starting as master node (with synchronization to permanent storage)"
+	hostname > /data/mysql/master_node_hostname
 	# Find other existing node to connect to
-	target_node=''
-	while read service; do
-		service_ip=`echo $service | awk '{ print $1 }'`
-		if [ "$service_ip" ]; then
+	existing_nodes=''
+	for node_ip in $service_nodes; do
+		if [[ "$node_ip" && "$node_ip" != "$master_node" ]]; then
 			# Check if node is ready
-			if mysqladmin --host=$service_ip --user=root --password=$MYSQL_ROOT_PASSWORD ping; then
-				target_node=$service_ip
+			if mysqladmin --host=$node_ip --user=root --password=$MYSQL_ROOT_PASSWORD ping; then
+				existing_nodes="$existing_nodes,$node_ip"
 				break
 			fi
 		fi
-	done <<< "`grep -P "[^_\s]_${SERVICE_NAME}_\d+$" /etc/hosts`"
-	params_before="$params_before --wsrep_cluster_address=gcomm://$target_node"
+	done
+	# When first node fails to connect to any other node from the cluster, then we need to force its start
+	# TODO: Ideally instances should communicate about who's version of history is more recent and then start cluster from that node,
+	# but for now we assume master not to be always up to date
+	if [ ! "$existing_nodes" ]; then
+		echo "No existing alive nodes found in cluster, forcing start in master node"
+		sed -i 's/safe_to_bootstrap: 0/safe_to_bootstrap: 1/g' /var/lib/mysql_local/grastate.dat
+	fi
+	params_before="$params_before --wsrep_cluster_address=gcomm://${existing_nodes:1}"
 fi
 
 set -- $params_before

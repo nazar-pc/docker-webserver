@@ -7,7 +7,7 @@ RUN \
 
 	apt-get update && \
 	apt-get upgrade -y && \
-	apt-get install -y --no-install-recommends curl ca-certificates unzip inotify-tools && \
+	apt-get install -y --no-install-recommends curl ca-certificates unzip dnsutils && \
 	apt-get clean && \
 	rm -rf /var/lib/apt/lists/* && \
 
@@ -28,13 +28,15 @@ RUN \
 COPY config.json /etc/consul.d_dist/config.json
 COPY webserver-entrypoint.sh /
 
+# /tmp will be used for non-master nodes to store data between restarts and image upgrades
 VOLUME \
 	/data \
 	/etc/consul.d \
+	/tmp \
 	/var/lib/consul
 
 ENV \
-	CONSUL_SERVICE=consul \
+	SERVICE_NAME=consul \
 	MIN_SERVERS=1 \
 	GOMAXPROCS=2
 

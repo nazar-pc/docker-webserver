@@ -7,11 +7,11 @@ RUN \
 
 	rm -f /etc/service/sshd/down && \
 
-# Upgrade system and install inotify-tools, curl, git, mc, wget and php-cli of course:)
+# Upgrade system and install dnsutils, curl, git, mc, wget and php-cli of course:)
 
 	apt-get update && \
 	apt-get upgrade -y && \
-	apt-get install -y inotify-tools curl git mc wget php-cli && \
+	apt-get install -y dnsutils curl git mc wget php-cli && \
 
 # Ceph repository for up to date version of ceph-fuse package; Ceph itself is used as cluster filesystem
 
@@ -40,12 +40,9 @@ RUN \
 	curl -sS https://getcomposer.org/installer | php -- --install-dir=/usr/local/bin --filename=composer --version=$COMPOSER_VERSION
 
 COPY ceph-mount.sh /
-COPY consul-dns.sh /
 COPY webserver-entrypoint.sh /
 
 ENV \
-	CONSUL_SERVICE=consul \
-
 	CEPH_MON_SERVICE=ceph-mon \
 	CEPHFS_MOUNT=0 \
 

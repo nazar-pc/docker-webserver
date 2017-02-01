@@ -3,11 +3,11 @@ MAINTAINER Nazar Mokrynskyi <nazar@mokrynskyi.com>
 
 RUN \
 
-# We'll need inotify-tools package to watch for files changes
+# We'll need dnsutils package for DNS lookups
 
 	apt-get update && \
 	apt-get upgrade -y && \
-	apt-get install -y inotify-tools && \
+	apt-get install -y dnsutils && \
 
 # Ceph repository for up to date version of ceph-fuse package; Ceph itself is used as cluster filesystem
 
@@ -51,19 +51,18 @@ RUN \
 	chown -R mysql:mysql /var/lib/mysql /var/run/mysqld
 
 COPY ceph-mount.sh /
-COPY consul-dns.sh /
 COPY galera.cnf /etc/mysql_dist/galera.cfg
 COPY webserver-entrypoint.sh /
 
+# /tmp will be used for non-master nodes to store data between restarts and image upgrades
 VOLUME \
 	/data \
 	/etc/mysql \
+	/tmp \
 	/var/lib/mysql \
 	/var/log/mysql
 
 ENV \
-	CONSUL_SERVICE=consul \
-
 	CEPH_MON_SERVICE=ceph-mon \
 	CEPHFS_MOUNT=0 \
 

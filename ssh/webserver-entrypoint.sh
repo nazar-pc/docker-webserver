@@ -1,8 +1,6 @@
 #!/bin/bash
 set -e
 
-/consul-dns.sh &
-
 /ceph-mount.sh \
 	/data \
 	/etc/ssh

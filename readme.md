@@ -32,56 +32,58 @@ cd example.com
 Now create `docker-compose.yml` inside with following contents:
 
 ```yml
-data:
-  image: nazarpc/webserver:data
-  volumes_from:
-    - example.com
-
-logrotate:
-  image: nazarpc/webserver:logrotate
-  restart: always
-  volumes_from:
-    - data
-
-mariadb:
-  image: nazarpc/webserver:mariadb
-  restart: always
-  volumes_from:
-    - data
-
-nginx:
-  image: nazarpc/webserver:nginx
-  links:
-    - php
-#  ports:
-#    - {ip where to bind}:{port on localhost where to bind}:80
-  restart: always
-  volumes_from:
-    - data
-
-php:
-  image: nazarpc/webserver:php-fpm
-  links:
-    - mariadb:mysql
-  restart: always
-  volumes_from:
-    - data
-
-#phpmyadmin:
-#  image: nazarpc/webserver:phpmyadmin
-#  links:
-#    - mariadb:mysql
-#  restart: always
-#  ports:
-#    - {ip where to bind}:{port on localhost where to bind}:80
-
-ssh:
-  image: nazarpc/webserver:ssh
-  restart: always
-  volumes_from:
-    - data
-#  ports:
-#    - {ip where to bind}:{port on localhost where to bind}:22
+version: '2'
+services:
+  data:
+    image: nazarpc/webserver:data
+    volumes_from:
+      - example.com
+  
+  logrotate:
+    image: nazarpc/webserver:logrotate
+    restart: always
+    volumes_from:
+      - data
+  
+  mariadb:
+    image: nazarpc/webserver:mariadb
+    restart: always
+    volumes_from:
+      - data
+  
+  nginx:
+    image: nazarpc/webserver:nginx
+    links:
+      - php
+#    ports:
+#      - {ip where to bind}:{port on localhost where to bind}:80
+    restart: always
+    volumes_from:
+      - data
+  
+  php:
+    image: nazarpc/webserver:php-fpm
+    links:
+      - mariadb:mysql
+    restart: always
+    volumes_from:
+      - data
+  
+#  phpmyadmin:
+#    image: nazarpc/webserver:phpmyadmin
+#    links:
+#      - mariadb:mysql
+#    restart: always
+#    ports:
+#      - {ip where to bind}:{port on localhost where to bind}:80
+  
+  ssh:
+    image: nazarpc/webserver:ssh
+    restart: always
+    volumes_from:
+      - data
+#    ports:
+#      - {ip where to bind}:{port on localhost where to bind}:22
 ```
 
 Now customize it as you like, feel free to comment-out or remove `mariadb`, `php` or `ssh` container if you have just bunch of static files, also you can uncomment `phpmyadmin` container if needed.
@@ -134,7 +136,7 @@ This will result in `/backup-on-host/new-backup.tar` file being created - feel f
 
 All other containers are standard and doesn't contain anything important, that is why upgrade process is so simple.
 
-**NOTE: You'll likely want to stop MariaDB instance before backup (it is enough to stop first node in case of MariaDB cluster with 2+ nodes)**
+**NOTE: You'll likely want to stop MariaDB instance before backup (it is enough to stop master node in case of MariaDB cluster with 2+ nodes)**
 
 # Restore
 Restoration from backup is not more difficult that making backup, there is `nazarpc/webserver:restore` image for that:

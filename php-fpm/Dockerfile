@@ -3,11 +3,8 @@ MAINTAINER Nazar Mokrynskyi <nazar@mokrynskyi.com>
 
 RUN \
 
-# We'll need inotify-tools package to watch for files changes
-
 	apt-get update && \
 	apt-get upgrade -y && \
-	apt-get install -y --no-install-recommends inotify-tools && \
 
 # Ceph repository for up to date version of ceph-fuse package; Ceph itself is used as cluster filesystem
 
@@ -32,7 +29,6 @@ RUN \
 	mv /usr/local/etc /usr/local/etc_dist
 
 COPY ceph-mount.sh /
-COPY consul-dns.sh /
 COPY webserver-entrypoint.sh /
 
 VOLUME \
@@ -40,8 +36,6 @@ VOLUME \
 	/usr/local/etc
 
 ENV \
-	CONSUL_SERVICE=consul \
-
 	CEPH_MON_SERVICE=ceph-mon \
 	CEPHFS_MOUNT=0
 
