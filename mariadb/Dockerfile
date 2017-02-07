@@ -1,5 +1,5 @@
 FROM mariadb:10.1
-MAINTAINER Nazar Mokrynskyi <nazar@mokrynskyi.com>
+LABEL maintainer "Nazar Mokrynskyi <nazar@mokrynskyi.com>"
 
 RUN \
 

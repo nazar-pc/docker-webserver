@@ -1,5 +1,5 @@
 FROM busybox
-MAINTAINER Nazar Mokrynskyi <nazar@mokrynskyi.com>
+LABEL maintainer "Nazar Mokrynskyi <nazar@mokrynskyi.com>"
 
 # Restore files from tar into root of the filesystem
 

@@ -1,5 +1,5 @@
 FROM phusion/baseimage:0.9.19
-MAINTAINER Nazar Mokrynskyi <nazar@mokrynskyi.com>
+LABEL maintainer "Nazar Mokrynskyi <nazar@mokrynskyi.com>"
 
 RUN \
 

@@ -1,5 +1,5 @@
 FROM ceph/daemon:tag-build-master-kraken-ubuntu-16.04
-MAINTAINER Nazar Mokrynskyi <nazar@mokrynskyi.com>
+LABEL maintainer "Nazar Mokrynskyi <nazar@mokrynskyi.com>"
 
 RUN \
 
