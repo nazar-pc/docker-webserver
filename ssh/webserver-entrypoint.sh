@@ -7,14 +7,14 @@ set -e
 
 if [ ! -e /data/.ssh ]; then
 	mkdir -p /data/.ssh
-	chown 1000:1000 /data
 fi
 
 if [ ! -e /data/ssh ]; then
 	mkdir -p /data/ssh
-	chown 1000:1000 /data
 	ln -s /etc/ssh /data/ssh/config
 fi
+
+chown git:git /data
 
 if [ ! -e /etc/ssh/sshd_config ]; then
 	cp -a /etc/ssh_dist/* /etc/ssh/

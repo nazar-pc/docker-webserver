@@ -23,7 +23,12 @@ RUN \
 
 # We'll keep files in /var/lib/consul_local which will be symlink to /var/lib/consul on first instance and local directory on others (changed locally in container)
 
-	ln -s /var/lib/consul /var/lib/consul_local
+	ln -s /var/lib/consul /var/lib/consul_local && \
+
+# git user as in other images
+
+	addgroup -gid 1000 git && \
+	useradd -d /data -s /bin/bash -g 1000 -u 1000 git
 
 COPY config.json /etc/consul.d_dist/config.json
 COPY webserver-entrypoint.sh /

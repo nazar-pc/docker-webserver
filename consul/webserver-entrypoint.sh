@@ -2,16 +2,16 @@
 
 if [ ! -e /etc/consul.d/config.json ]; then
 	cp -a /etc/consul.d_dist/* /etc/consul.d/
-	chown -R 1000:1000 /etc/consul.d
 fi
 
 if [ ! -e /data/consul ]; then
 	mkdir -p /data/consul
-	chown 1000:1000 /data
 	ln -s /etc/consul.d /data/consul/config
 	ln -s /var/lib/consul /data/consul/data
-	chown -R 1000:1000 /data/consul
 fi
+
+chown git:git /data
+chown -R git:git /data/consul /etc/consul.d
 
 hostname=`hostname`
 current_ip=`cat /etc/hosts | grep $hostname | awk '{ print $1; exit }'`

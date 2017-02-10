@@ -42,13 +42,16 @@ RUN \
 	sed 's/exec "$@"//g' /usr/local/bin/docker-entrypoint.sh > /docker-entrypoint-init.sh && \
 	chmod +x /docker-entrypoint-init.sh && \
 
-# Restore original ids of mysql user and group they will replace existing mysql group from the image, which were changed to custom
+# Restore original ids of mysql user and group, they will replace existing mysql group from the image, which were changed to custom
 
 	userdel mysql && \
 	addgroup -gid 999 mysql && \
 	useradd -d /data -s /bin/bash -g 999 -u 999 mysql && \
 
-	chown -R mysql:mysql /var/lib/mysql /var/run/mysqld
+# git user as in other images
+
+	addgroup -gid 1000 git && \
+	useradd -d /data -s /bin/bash -g 1000 -u 1000 git
 
 COPY ceph-mount.sh /
 COPY galera.cnf /etc/mysql_dist/galera.cfg

@@ -7,17 +7,19 @@
 
 if [ ! -e /etc/mysql/my.cnf ]; then
 	cp -a /etc/mysql_dist/* /etc/mysql/
-	chown -R 1000:1000 /etc/mysql
 fi
 
 if [ ! -e /data/mysql ]; then
 	mkdir -p /data/mysql
-	chown 1000:1000 /data
 	ln -s /etc/mysql /data/mysql/config
 	ln -s /var/log/mysql /data/mysql/log
 	ln -s /var/lib/mysql /data/mysql/data
-	chown -R 1000:1000 /data/mysql
 fi
+
+chown git:git /data
+chown -R git:git /data/mysql /etc/mysql
+chown mysql:mysql /var/lib/mysql /var/log/mysql /var/run/mysqld
+chmod 770 /var/lib/mysql
 
 if [ ! -e /data/mysql/root_password ]; then
 	pwgen -s 30 1 > /data/mysql/root_password
@@ -25,28 +27,6 @@ fi
 
 export MYSQL_ROOT_PASSWORD=`cat /data/mysql/root_password`
 echo "MySQL root password (from /data/mysql/root_password): $MYSQL_ROOT_PASSWORD"
-
-# Upgrade MariaDB server to MariaDB Galera server
-# TODO remove this block in future, it is here for smooth upgrade from older configurations
-if [ ! -e /etc/mysql/galera.cfg ]; then
-	echo 'Regular MariaDB server setup detected'
-	gosu mysql mysqld --wsrep_on=OFF &
-	while [ ! "`ps -A | grep mysqld`" ]; do
-		sleep 1
-	done
-	sleep 3
-	echo 'Upgrading to MariaDB Galera server'
-	mysql_upgrade --password=$MYSQL_ROOT_PASSWORD
-	pkill --signal SIGTERM mysqld
-	while [ "`ps -A | grep mysqld`" ]; do
-		sleep 1
-	done
-	echo 'Upgrading to MariaDB Galera server finished'
-	sed -i 's/\/var\/lib\/mysql/&_local/g' /etc/mysql/my.cnf
-	echo '!include /etc/mysql/galera.cfg' >> /etc/mysql/my.cnf
-	cp /etc/mysql_dist/galera.cfg /etc/mysql/galera.cfg
-	chown 1000:1000 /etc/mysql/galera.cfg
-fi
 
 # Initialize MariaDB using entrypoint from original image without last line
 params_before="$@ --wsrep_sst_method=xtrabackup-v2 --wsrep_sst_auth=root:$MYSQL_ROOT_PASSWORD"
