@@ -12,27 +12,25 @@ if [ ! "$SERVICE_PORTS" ]; then
 	exit
 fi
 
-# Update configuration on /etc/hosts file changes
-function update-configuration {
-	cp $config_file.dist $config_file
+# Watch for DNS changes and keep configuration up to date
+while [ true ]; do
+	cp $config_file.dist $config_file.new
 	for service_port in `echo $SERVICE_PORTS | tr ','  ' '`; do
-		echo -e "listen $SERVICE_NAME-$service_port\n\tmode tcp\n\tbind 0.0.0.0:$service_port" >> $config_file
-		grep -P "[^_\s]_${SERVICE_NAME}_\d+$" /etc/hosts | while read service; do
-			service_id=`echo $service | awk '{ print $2 }'`
-			service_ip=`echo $service | awk '{ print $1 }'`
-			echo -e "\tserver $service_id $service_ip:$service_port" >> $config_file
+		echo -e "listen $SERVICE_NAME-$service_port\n\tmode tcp\n\tbind 0.0.0.0:$service_port" >> $config_file.new
+		service_nodes=`dig $SERVICE_NAME a +short | sort`
+		for service_ip in $service_nodes; do
+			echo -e "\tserver $SERVICE_NAME-$service_ip-$service_port $service_ip:$service_port" >> $config_file.new
 		done
 	done
-}
-
-# Watch for /etc/hosts file changes and keep configuration up to date
-while [ true ]; do
-	update-configuration
-	pid=`pidof haproxy`
-	if [ "$pid" ]; then
-		haproxy -f $config_file -sf `pidof haproxy` &
-	else
-		haproxy -f $config_file &
+	if ! cmp --silent $config_file $config_file.new; then
+		echo "Configuration updated, reloading"
+		cp $config_file.new $config_file
+		pid=`pidof haproxy`
+		if [ "$pid" ]; then
+			haproxy -f $config_file -sf `pidof haproxy` &
+		else
+			haproxy -f $config_file &
+		fi
 	fi
-	inotifywait -e modify -qq /etc/hosts
+	sleep 1
 done
