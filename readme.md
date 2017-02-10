@@ -9,8 +9,8 @@ Currently WebServer consists of such images:
 * PhpMyAdmin (based on `nazarpc/phpmyadmin` image, which is official php image with Apache2, where PhpMyAdmin was installed)
 * Consul (based on official `debian:jessie` image)
 * HAProxy (based on official `haproxy` image)
-* backup container (based on official `busybox` image)
-* restore container (based on official `busybox` image)
+* backup container (based on official `ubuntu:16.04` image)
+* restore container (based on official `ubuntu:16.04` image)
 * [nazarpc/webserver-apps](https://github.com/nazar-pc/docker-webserver-apps) for ready to use applications that plays nicely with images mentioned above
 
 # How to use
@@ -129,7 +129,7 @@ docker-compose up -d
 # Backup
 To make backup you need to only backup volumes of data-only container. The easiest way to do that is using `nazarpc/webserver:backup` image:
 ```
-docker run --rm --volumes-from example.com -v /backup-on-host:/backup --env BACKUP_FILENAME=new-backup nazarpc/webserver:backup
+docker run --rm --volumes-from=example.com -v /backup-on-host:/backup --env BACKUP_FILENAME=new-backup nazarpc/webserver:backup
 ```
 
 This will result in `/backup-on-host/new-backup.tar` file being created - feel free to specify other directory and other name for backup file.
@@ -141,7 +141,7 @@ All other containers are standard and doesn't contain anything important, that i
 # Restore
 Restoration from backup is not more difficult that making backup, there is `nazarpc/webserver:restore` image for that:
 ```
-docker run --rm --volumes-from example.com -v /backup-on-host/new-backup.tar:/backup.tar nazarpc/webserver:restore
+docker run --rm --volumes-fromexample.com -v /backup-on-host/new-backup.tar:/backup.tar nazarpc/webserver:restore
 ```
 
 That is it, empty just created `example.com` container will be filled with data from backup and ready to use.

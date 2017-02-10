@@ -1,4 +1,4 @@
-FROM busybox
+FROM ubuntu:16.04
 LABEL maintainer "Nazar Mokrynskyi <nazar@mokrynskyi.com>"
 
 # Restore files from tar into root of the filesystem
