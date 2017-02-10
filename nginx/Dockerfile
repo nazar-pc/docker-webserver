@@ -1,4 +1,4 @@
-FROM nginx
+FROM nginx:1
 LABEL maintainer "Nazar Mokrynskyi <nazar@mokrynskyi.com>"
 
 RUN \
