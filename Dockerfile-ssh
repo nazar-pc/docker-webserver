@@ -39,8 +39,8 @@ RUN \
 	COMPOSER_VERSION=1.3.2 && \
 	curl -sS https://getcomposer.org/installer | php -- --install-dir=/usr/local/bin --filename=composer --version=$COMPOSER_VERSION
 
-COPY ceph-mount.sh /
-COPY webserver-entrypoint.sh /
+COPY common/ceph-mount.sh /
+COPY ssh/webserver-entrypoint.sh /
 
 ENV \
 	CEPH_MON_SERVICE=ceph-mon \

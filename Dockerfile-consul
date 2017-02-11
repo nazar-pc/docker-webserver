@@ -30,8 +30,8 @@ RUN \
 	addgroup -gid 1000 git && \
 	useradd -d /data -s /bin/bash -g 1000 -u 1000 git
 
-COPY config.json /etc/consul.d_dist/config.json
-COPY webserver-entrypoint.sh /
+COPY consul/config.json /etc/consul.d_dist/config.json
+COPY consul/webserver-entrypoint.sh /
 
 # /tmp will be used for non-master nodes to store data between restarts and image upgrades
 VOLUME \

@@ -53,9 +53,9 @@ RUN \
 	addgroup -gid 1000 git && \
 	useradd -d /data -s /bin/bash -g 1000 -u 1000 git
 
-COPY ceph-mount.sh /
-COPY galera.cnf /etc/mysql_dist/galera.cfg
-COPY webserver-entrypoint.sh /
+COPY common/ceph-mount.sh /
+COPY mariadb/galera.cnf /etc/mysql_dist/galera.cfg
+COPY mariadb/webserver-entrypoint.sh /
 
 # /tmp will be used for non-master nodes to store data between restarts and image upgrades
 VOLUME \
