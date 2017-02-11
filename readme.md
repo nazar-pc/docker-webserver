@@ -9,8 +9,8 @@ Currently WebServer consists of such images:
 * PhpMyAdmin (based on `nazarpc/phpmyadmin` image, which is official php image with Apache2, where PhpMyAdmin was installed)
 * Consul (based on official `debian:jessie` image)
 * HAProxy (based on official `haproxy` image)
-* backup container (based on official `ubuntu:16.04` image)
-* restore container (based on official `ubuntu:16.04` image)
+* backup container (based on official `debian:jessie` image)
+* restore container (based on official `debian:jessie` image)
 * [nazarpc/webserver-apps](https://github.com/nazar-pc/docker-webserver-apps) for ready to use applications that plays nicely with images mentioned above
 
 # How to use
