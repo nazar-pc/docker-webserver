@@ -35,13 +35,20 @@ gosu mysql bash /docker-entrypoint-init.sh "$@"
 
 # If this is not the master node of the service (first instance that have started) - do not use /var/lib/mysql and try to connect to the master node
 service_nodes=`dig $SERVICE_NAME a +short | sort`
-master_node=`cat /data/mysql/master_node_ip`
-if [ ! "`echo $service_nodes | grep $master_node`" ]; then
-	first_node=`echo $service_nodes | awk '{ print $1; exit }'`
-	echo "Master node $master_node not reachable, changing to the first node $first_node"
+first_node=`echo $service_nodes | awk '{ print $1; exit }'`
+if [ ! -e /data/mysql/master_node_ip ]; then
+	echo "No master node found, changing to the first node $first_node"
 	master_node=$first_node
 	echo $master_node > /data/mysql/master_node_ip
+else
+	master_node=`cat /data/mysql/master_node_ip`
+	if [ ! "`echo $service_nodes | grep $master_node`" ]; then
+		echo "Master node $master_node not reachable, changing to the first node $first_node"
+		master_node=$first_node
+		echo $master_node > /data/mysql/master_node_ip
+	fi
 fi
+echo "Master node: $master_node"
 if [ ! "`cat /etc/hosts | grep $master_node`" ]; then
 	echo "Starting as regular node (no synchronization to permanent storage)"
 	if [ -L /var/lib/mysql_local ]; then
