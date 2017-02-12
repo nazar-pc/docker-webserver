@@ -1,6 +1,6 @@
 # WebServer (MariaDB, PHP-FPM, Nginx) composed from several separate containers linked together
 Currently WebServer consists of such images:
-* Data-only container (based on official `busybox` image)
+* Data-only container (based on official `debian:jessie` image)
 * logrotate container (based on official `debian:jessie` image)
 * MariaDB (based on official `MariaDB` image)
 * Nginx (based on official `Nginx` image)

@@ -1,4 +1,4 @@
-FROM busybox
+FROM debian:jessie
 LABEL maintainer "Nazar Mokrynskyi <nazar@mokrynskyi.com>"
 
 RUN \
