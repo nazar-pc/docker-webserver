@@ -46,14 +46,11 @@ RUN \
 
 	userdel mysql && \
 	addgroup -gid 999 mysql && \
-	useradd -d /data -s /bin/bash -g 999 -u 999 mysql && \
+	useradd -d /data -s /bin/bash -g 999 -u 999 mysql
 
-# git user as in other images
+COPY common /webserver-common/
+RUN /webserver-common/create-git-user.sh
 
-	addgroup -gid 1000 git && \
-	useradd -d /data -s /bin/bash -g 1000 -u 1000 git
-
-COPY common/ceph-mount.sh /
 COPY mariadb/galera.cnf /etc/mysql_dist/galera.cfg
 COPY mariadb/webserver-entrypoint.sh /
 

@@ -27,14 +27,11 @@ RUN \
 
 	sed -i 's/127.0.0.1:9000/php:9000/g' /etc/nginx/conf.d/default.conf && \
 
-# Create group and user for Nginx
-
-	addgroup -gid 1000 git && \
-	useradd -d /data -s /bin/bash -g 1000 -u 1000 git && \
-
 	mv /etc/nginx /etc/nginx_dist
 
-COPY common/ceph-mount.sh /
+COPY common /webserver-common/
+RUN /webserver-common/create-git-user.sh
+
 COPY nginx/webserver-entrypoint.sh /
 
 VOLUME \

@@ -1,6 +1,6 @@
 #!/bin/bash
 
-/ceph-mount.sh \
+/webserver-common/ceph-mount.sh \
 	/data \
 	/etc/mysql \
 	/var/lib/mysql

@@ -1,7 +1,7 @@
 #!/bin/bash
 set -e
 
-/ceph-mount.sh \
+/webserver-common/ceph-mount.sh \
 	/data \
 	/etc/nginx \
 	/usr/share/nginx/html
