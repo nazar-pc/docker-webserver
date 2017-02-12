@@ -25,9 +25,10 @@ RUN \
 
 	ln -s /var/lib/consul /var/lib/consul_local
 
-COPY consul/config.json /etc/consul.d_dist/config.json
+COPY common /webserver-common/
 RUN /webserver-common/create-git-user.sh
 
+COPY consul/config.json /etc/consul.d_dist/config.json
 COPY consul/webserver-entrypoint.sh /
 
 # /tmp will be used for non-master nodes to store data between restarts and image upgrades
