@@ -14,22 +14,19 @@ fi
 
 # Watch for DNS changes and keep configuration up to date
 while [ true ]; do
-	cp $config_file.dist $config_file.new
+	cp $config_file.dist $config_file
 	for service_port in `echo $SERVICE_PORTS | tr ','  ' '`; do
-		echo -e "listen $SERVICE_NAME-$service_port\n\tmode tcp\n\tbind 0.0.0.0:$service_port" >> $config_file.new
+		echo -e "listen $SERVICE_NAME-$service_port\n\tmode tcp\n\tbind 0.0.0.0:$service_port" >> $config_file
 		for service_ip in `/webserver-common/list-service-nodes.sh $SERVICE_NAME`; do
-			echo -e "\tserver $SERVICE_NAME-$service_ip-$service_port $service_ip:$service_port" >> $config_file.new
+			echo -e "\tserver $SERVICE_NAME-$service_ip-$service_port $service_ip:$service_port" >> $config_file
 		done
 	done
-	if ! cmp --silent $config_file $config_file.new; then
-		echo "Configuration updated, reloading"
-		cp $config_file.new $config_file
-		pid=`pidof haproxy`
-		if [ "$pid" ]; then
-			haproxy -f $config_file -sf `pidof haproxy` &
-		else
-			haproxy -f $config_file &
-		fi
+	echo "Configuration updated, reloading"
+	pid=`pidof haproxy`
+	if [ "$pid" ]; then
+		haproxy -f $config_file -sf $pid &
+	else
+		haproxy -f $config_file &
 	fi
-	sleep 1
+	/webserver-common/wait-for-dns-update.sh $SERVICE_NAME
 done
