@@ -7,9 +7,8 @@ fi
 
 if [ ! "$MON_IP" ]; then
 	if [ "$1" = 'mon' ]; then
-		# If we are running monitor - use host IP
-		hostname=`hostname`
-		export MON_IP=`cat /etc/hosts | grep $hostname | awk '{ print $1; exit }'`
+		# If we are running monitor - use own IP
+		export MON_IP=`/webserver-common/get-own-ip.sh`
 	else
 		# Otherwise use host name
 		export MON_IP=$CEPH_MON_SERVICE

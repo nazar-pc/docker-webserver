@@ -9,6 +9,8 @@ RUN \
 	apt-get clean && \
 	rm -rf /var/lib/apt/lists/*
 
+COPY common /webserver-common/
+
 COPY ceph/webserver-entrypoint.sh /
 
 VOLUME /var/lib/ceph

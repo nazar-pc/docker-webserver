@@ -17,8 +17,7 @@ while [ true ]; do
 	cp $config_file.dist $config_file.new
 	for service_port in `echo $SERVICE_PORTS | tr ','  ' '`; do
 		echo -e "listen $SERVICE_NAME-$service_port\n\tmode tcp\n\tbind 0.0.0.0:$service_port" >> $config_file.new
-		service_nodes=`dig $SERVICE_NAME a +short | sort`
-		for service_ip in $service_nodes; do
+		for service_ip in `/webserver-common/list-service-nodes.sh $SERVICE_NAME`; do
 			echo -e "\tserver $SERVICE_NAME-$service_ip-$service_port $service_ip:$service_port" >> $config_file.new
 		done
 	done

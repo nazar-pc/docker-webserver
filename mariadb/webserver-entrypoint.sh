@@ -34,21 +34,8 @@ set -- $@ --bind_address=127.0.0.1 --wsrep_cluster_address=gcomm:// --wsrep_on=O
 gosu mysql bash /docker-entrypoint-init.sh "$@"
 
 # If this is not the master node of the service (first instance that have started) - do not use /var/lib/mysql and try to connect to the master node
-service_nodes=`dig $SERVICE_NAME a +short | sort`
-first_node=`echo $service_nodes | awk '{ print $1; exit }'`
-if [ ! -e /data/mysql/master_node_ip ]; then
-	echo "No master node found, changing to the first node $first_node"
-	master_node=$first_node
-	echo $master_node > /data/mysql/master_node_ip
-else
-	master_node=`cat /data/mysql/master_node_ip`
-	if [ ! "`echo $service_nodes | grep $master_node`" ]; then
-		echo "Master node $master_node not reachable, changing to the first node $first_node"
-		master_node=$first_node
-		echo $master_node > /data/mysql/master_node_ip
-	fi
-fi
-echo "Master node: $master_node"
+/webserver-common/determine-service-master-node.sh /data/mysql/master_node_ip $SERVICE_NAME
+master_node=`cat /data/mysql/master_node_ip`
 if [ ! "`cat /etc/hosts | grep $master_node`" ]; then
 	echo "Starting as regular node (no synchronization to permanent storage)"
 	if [ -L /var/lib/mysql_local ]; then
@@ -71,7 +58,7 @@ else
 	hostname > /data/mysql/master_node_hostname
 	# Find other existing node to connect to
 	existing_nodes=''
-	for node_ip in $service_nodes; do
+	for node_ip in `/webserver-common/list-service-nodes.sh $SERVICE_NAME`; do
 		if [[ "$node_ip" && "$node_ip" != "$master_node" ]]; then
 			# Check if node is ready
 			if mysqladmin --host=$node_ip --user=root --password=$MYSQL_ROOT_PASSWORD ping; then

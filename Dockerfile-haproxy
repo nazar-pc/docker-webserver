@@ -9,6 +9,8 @@ RUN \
 	rm -rf /var/lib/apt/lists/*
 
 
+COPY common /webserver-common/
+
 COPY haproxy/haproxy.conf /usr/local/etc/haproxy/haproxy.conf.dist
 COPY haproxy/webserver-entrypoint.sh /
 

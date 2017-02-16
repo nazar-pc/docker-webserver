@@ -13,18 +13,11 @@ fi
 chown git:git /data
 chown -R git:git /data/consul /etc/consul.d
 
-hostname=`hostname`
-current_ip=`cat /etc/hosts | grep $hostname | awk '{ print $1; exit }'`
-cmd="consul agent -server -advertise $current_ip -config-dir /etc/consul.d $@"
+own_ip=`/webserver-common/get-own-ip.sh`
+cmd="consul agent -server -advertise $own_ip -config-dir /etc/consul.d $@"
 # If this is not the master node of the service (first instance that have started) - do not use /var/lib/consul and try to connect to the master node
-service_nodes=`dig $SERVICE_NAME a +short | sort`
+/webserver-common/determine-service-master-node.sh /data/consul/master_node_ip $SERVICE_NAME
 master_node=`cat /data/consul/master_node_ip`
-if [ ! "`echo $service_nodes | grep $master_node`" ]; then
-	first_node=`echo $service_nodes | awk '{ print $1; exit }'`
-	echo "Master node $master_node not reachable, changing to the first node $first_node"
-	master_node=$first_node
-	echo $master_node > /data/consul/master_node_ip
-fi
 if [ ! "`cat /etc/hosts | grep $master_node`" ]; then
 	echo "Starting as regular node (no synchronization to permanent storage)"
 	if [ -L /var/lib/consul_local ]; then
@@ -40,8 +33,8 @@ else
 fi
 
 # Try to join other nodes in cluster
-for node_ip in $service_nodes; do
-	if [[ "$node_ip" && "$node_ip" != "$current_ip" ]]; then
+for node_ip in `/webserver-common/list-service-nodes.sh $SERVICE_NAME`; do
+	if [[ "$node_ip" && "$node_ip" != "$own_ip" ]]; then
 		cmd="$cmd -retry-join $node_ip"
 	fi
 done
