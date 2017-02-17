@@ -11,7 +11,7 @@ RUN \
 
 	apt-get update && \
 	apt-get upgrade -y && \
-	apt-get install -y dnsutils curl git mc wget php-cli && \
+	apt-get install -y --no-install-recommends dnsutils curl git mc wget php-cli && \
 
 # Ceph repository for up to date version of ceph-fuse package; Ceph itself is used as cluster filesystem
 

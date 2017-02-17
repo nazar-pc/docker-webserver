@@ -7,7 +7,7 @@ RUN \
 
 	apt-get update && \
 	apt-get upgrade -y && \
-	apt-get install -y dnsutils && \
+	apt-get install -y --no-install-recommends dnsutils && \
 
 # Ceph repository for up to date version of ceph-fuse package; Ceph itself is used as cluster filesystem
 
@@ -22,14 +22,21 @@ RUN \
 	apt-get clean && \
 	rm -rf /var/lib/apt/lists/* && \
 
+# We'll keep configs in /data/mysql/config on first instance and local directory on others (is set locally in container)
+
+	sed -i 's/\/etc\/mysql/\/data\/mysql\/config/g' /etc/mysql/my.cnf && \
+
 # Append Galera cluster config inclusion to default config
 
-	echo '!include /etc/mysql/galera.cfg' >> /etc/mysql/my.cnf && \
+	echo '!include /data/mysql/config/galera.cfg' >> /etc/mysql/my.cnf && \
 
-# We'll keep files in /var/lib/mysql_local which will be symlink to /var/lib/mysql on first instance and local directory on others (changed locally in container)
+# We'll keep data in /data/mysql/data on first instance and local directory on others (is set locally in container)
 
-	sed -i 's/\/var\/lib\/mysql/&_local/g' /etc/mysql/my.cnf && \
-	ln -s /var/lib/mysql /var/lib/mysql_local && \
+	sed -i 's/\/var\/lib\/mysql/\/data\/mysql\/data/g' /etc/mysql/my.cnf && \
+
+# We'll keep logs in /data/mysql/log on first instance and local directory on others (is set locally in container)
+
+	sed -i 's/\/var\/log\/mysql/\/data\/mysql\/log/g' /etc/mysql/my.cnf && \
 
 # This is to redirect logs to stderr instead of non-running syslog (otherwise error messages will be lost)
 
@@ -46,7 +53,7 @@ RUN \
 
 	userdel mysql && \
 	addgroup -gid 999 mysql && \
-	useradd -d /data -s /bin/bash -g 999 -u 999 mysql
+	useradd -s /bin/bash -g 999 -u 999 mysql
 
 COPY common /webserver-common/
 RUN /webserver-common/create-git-user.sh
@@ -57,10 +64,7 @@ COPY mariadb/webserver-entrypoint.sh /
 # /tmp will be used for non-master nodes to store data between restarts and image upgrades
 VOLUME \
 	/data \
-	/etc/mysql \
-	/tmp \
-	/var/lib/mysql \
-	/var/log/mysql
+	/tmp
 
 ENV \
 	CEPH_MON_SERVICE=ceph-mon \
