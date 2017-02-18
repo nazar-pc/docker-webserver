@@ -166,11 +166,11 @@ ssh git@example.com
 ```
 
 # Internal structure
-Internally all that matters is `/data` directory - it contains all necessary symlinks for your convenience - here you can see files for Nginx and MariaDB, their logs and configs, PHP-FPM's config, SSH config and SSH keys directory.
+Internally all that matters is `/data` directory - it contains all necessary files (or symlinks sometimes) for your convenience - here you can see files for Nginx and MariaDB, their logs and configs, PHP-FPM's config, SSH config and SSH keys directory.
 That is all what will be persistent, everything else outside `/data` will be lost during upgrade.
 
 # Update configuration
-If you update some configuration - you don't need to restart everything, restart only things you need, for instance:
+If you update some configuration - you don't need to restart everything, restart only specific container you need, for instance:
 ```
 docker-compose restart nginx
 ```
