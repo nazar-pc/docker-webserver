@@ -7,6 +7,7 @@ Currently WebServer consists of such images:
 * PHP-FPM (based on `nazarpc/php:fpm` image, which is official image + bunch of frequently used PHP extensions)
 * SSH (based on `phusion/baseimage` image, contains pre-installed `curl`, `git`, `mc`, `wget`, `php-cli` and `composer` for your convenience)
 * PhpMyAdmin (based on `nazarpc/phpmyadmin` image, which is official php image with Apache2, where PhpMyAdmin was installed)
+* Ceph (based on upstream `ceph/daemon` image)
 * Consul (based on official `debian:jessie` image)
 * HAProxy (based on official `haproxy` image)
 * backup container (based on official `debian:jessie` image)
