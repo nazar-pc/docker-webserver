@@ -1,6 +1,6 @@
 {
 	"client_addr"          : "0.0.0.0",
-	"data_dir"             : "/var/lib/consul_local",
+	"data_dir"             : "/var/lib/consul",
 	"disable_update_check" : true,
 	"leave_on_terminate"   : true,
 	"ports"                : {
