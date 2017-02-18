@@ -84,6 +84,8 @@ services:
       - data
 #    ports:
 #      - {ip where to bind}:{port on localhost where to bind}:22
+#    environment:
+#      - PUBLIC_KEY={your public SSH key}
 ```
 
 Now customize it as you like, feel free to comment-out or remove `mariadb`, `php` or `ssh` container if you have just bunch of static files, also you can uncomment `phpmyadmin` container if needed.
@@ -149,13 +151,15 @@ That is it, empty just created `example.com` container will be filled with data 
 # SSH
 SSH might be needed to access files from outside, especially with git.
 
-Before you enter ssh container via SSH for the first time, you need to create file `/data/.ssh/authorized_keys` and put your public key contents inside ([how to generate SSH keys](https://help.github.com/articles/generating-ssh-keys/#step-2-generate-a-new-ssh-key)).
-For example, you can do that from Midnight Commander file manager
+Before you enter ssh container via SSH for the first time, you need to specify public SSH key ([how to generate SSH keys](https://help.github.com/articles/generating-ssh-keys/#step-2-generate-a-new-ssh-key)).
+The easiest way to do this is to define `PUBLIC_KEY` environment variable in `docker-compose.yml`.
+Alternatively you can create file `/data/.ssh/authorized_keys` and put your public key contents inside.
+For example, you can do that from Midnight Commander file manager:
 ```
 docker-compose run ssh mc
 ```
 
-Now you should be able to access container as `git` user:
+When public SSH key is added you should be able to access container as `git` user:
 ```
 ssh git@example.com
 ```

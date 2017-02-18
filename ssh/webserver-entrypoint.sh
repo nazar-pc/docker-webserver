@@ -9,6 +9,10 @@ if [ ! -e /data/.ssh ]; then
 	mkdir -p /data/.ssh
 fi
 
+if [[ "$PUBLIC_KEY" && (! -e /data/.ssh/authorized_keys || `cat /data/.ssh/authorized_keys | grep -F "$PUBLIC_KEY"` = '') ]]; then
+	echo $PUBLIC_KEY >> /data/.ssh/authorized_keys
+fi
+
 if [ ! -e /data/ssh ]; then
 	mkdir -p /data/ssh
 	ln -s /etc/ssh /data/ssh/config
