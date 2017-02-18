@@ -22,7 +22,7 @@ if [ ! -e /data/nginx ]; then
 	cp -a /etc/nginx_dist/* /data/nginx/config/
 fi
 
-chown git:git /data /data/nginx/log /data/nginx/www
+chown git:git /data /data/nginx /data/nginx/log /data/nginx/www
 chown -R git:git /data/nginx/config
 
 if [ "$1" = 'nginx' ]; then

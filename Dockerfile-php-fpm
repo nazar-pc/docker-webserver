@@ -21,6 +21,10 @@ RUN \
 
 	sed -i 's/www-data/git/g' /usr/local/etc/php-fpm.d/www.conf && \
 
+# We'll keep configs in /data/php/config
+
+	sed -i 's/etc\/php-fpm.d/php-fpm.d/g' /usr/local/etc/php-fpm.conf && \
+
 	mv /usr/local/etc /usr/local/etc_dist
 
 COPY common /webserver-common/
@@ -29,8 +33,7 @@ RUN /webserver-common/create-git-user.sh
 COPY php-fpm/webserver-entrypoint.sh /
 
 VOLUME \
-	/data \
-	/usr/local/etc
+	/data
 
 ENV \
 	CEPH_MON_SERVICE=ceph-mon \
