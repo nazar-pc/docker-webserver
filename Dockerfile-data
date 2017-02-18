@@ -3,30 +3,10 @@ LABEL maintainer "Nazar Mokrynskyi <nazar@mokrynskyi.com>"
 
 RUN \
 
-# /data directory will contain inside symlinks for all other directories alongside with some other data
-# Other directories for Consul, MySQL (MariaDB), Nginx, PHP-FPM and SSH as in upstream images
 	mkdir -p \
 		/data \
-		/etc/consul.d \
-		/etc/mysql \
-		/etc/nginx \
-		/etc/ssh \
-		/usr/local/etc \
-		/usr/share/nginx/html \
-		/var/lib/consul \
-		/var/lib/mysql \
-		/var/log/mysql \
-		/var/log/nginx
+		/etc/ssh
 
 VOLUME \
 	/data \
-	/etc/consul.d \
-	/etc/mysql \
-	/etc/nginx \
-	/etc/ssh \
-	/usr/local/etc \
-	/usr/share/nginx/html \
-	/var/lib/consul \
-	/var/lib/mysql \
-	/var/log/mysql \
-	/var/log/nginx
+	/etc/ssh
