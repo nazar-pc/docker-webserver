@@ -1,7 +1,7 @@
 FROM mariadb:10.1
 LABEL maintainer "Nazar Mokrynskyi <nazar@mokrynskyi.com>"
 
-COPY common /webserver-common/
+COPY webserver-common /webserver-common/
 
 RUN \
 

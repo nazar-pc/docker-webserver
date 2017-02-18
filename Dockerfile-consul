@@ -1,7 +1,7 @@
 FROM debian:jessie
 LABEL maintainer "Nazar Mokrynskyi <nazar@mokrynskyi.com>"
 
-COPY common /webserver-common/
+COPY webserver-common /webserver-common/
 
 RUN \
 

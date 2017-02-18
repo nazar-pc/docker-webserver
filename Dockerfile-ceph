@@ -1,7 +1,7 @@
 FROM ceph/daemon:tag-build-master-kraken-ubuntu-16.04
 LABEL maintainer "Nazar Mokrynskyi <nazar@mokrynskyi.com>"
 
-COPY common /webserver-common/
+COPY webserver-common /webserver-common/
 
 RUN \
 
