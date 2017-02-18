@@ -1,15 +1,18 @@
 FROM debian:jessie
 LABEL maintainer "Nazar Mokrynskyi <nazar@mokrynskyi.com>"
 
+COPY common /webserver-common/
+
 RUN \
+
+	/webserver-common/create-git-user.sh && \
+
+	/webserver-common/apt-get-update.sh && \
+	/webserver-common/apt-get-install-common.sh && \
 
 	CONSUL_VERSION=0.7.5 && \
 
-	apt-get update && \
-	apt-get upgrade -y && \
-	apt-get install -y --no-install-recommends curl ca-certificates unzip dnsutils && \
-	apt-get clean && \
-	rm -rf /var/lib/apt/lists/* && \
+	apt-get install -y --no-install-recommends unzip && \
 
 	curl -o /tmp/consul.zip https://releases.hashicorp.com/consul/${CONSUL_VERSION}/consul_${CONSUL_VERSION}_linux_amd64.zip && \
 	curl -o /tmp/consul-ui.zip https://releases.hashicorp.com/consul/${CONSUL_VERSION}/consul_${CONSUL_VERSION}_web_ui.zip && \
@@ -17,16 +20,15 @@ RUN \
 	unzip -d /ui /tmp/consul-ui.zip && \
 	rm /tmp/consul* && \
 
-	apt-get purge -y --auto-remove curl ca-certificates unzip && \
+	apt-get purge -y unzip && \
+
+	/webserver-common/apt-get-cleanup.sh && \
 
 	mkdir /etc/consul.d_dist && \
 
 # We'll keep files in /var/lib/consul_local which will be symlink to /var/lib/consul on first instance and local directory on others (changed locally in container)
 
 	ln -s /var/lib/consul /var/lib/consul_local
-
-COPY common /webserver-common/
-RUN /webserver-common/create-git-user.sh
 
 COPY consul/config.json /etc/consul.d_dist/config.json
 COPY consul/webserver-entrypoint.sh /

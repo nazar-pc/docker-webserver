@@ -1,26 +1,16 @@
 FROM mariadb:10.1
 LABEL maintainer "Nazar Mokrynskyi <nazar@mokrynskyi.com>"
 
+COPY common /webserver-common/
+
 RUN \
 
-# We'll need dnsutils package for DNS lookups
+	/webserver-common/create-git-user.sh && \
 
-	apt-get update && \
-	apt-get upgrade -y && \
-	apt-get install -y --no-install-recommends dnsutils && \
-
-# Ceph repository for up to date version of ceph-fuse package; Ceph itself is used as cluster filesystem
-
-	CEPH_VERSION=kraken && \
-	apt-get install -y --no-install-recommends curl ca-certificates && \
-	curl -sSL 'https://download.ceph.com/keys/release.asc' | apt-key add - && \
-	apt-get purge -y --auto-remove curl && \
-	echo "deb http://download.ceph.com/debian-$CEPH_VERSION/ jessie main" > /etc/apt/sources.list.d/ceph-$CEPH_VERSION.list && \
-	apt-get update && \
-	apt-get install -y --no-install-recommends ceph-fuse && \
-
-	apt-get clean && \
-	rm -rf /var/lib/apt/lists/* && \
+	/webserver-common/apt-get-update.sh && \
+	/webserver-common/apt-get-install-common.sh && \
+	/webserver-common/apt-get-install-ceph-fuse.sh && \
+	/webserver-common/apt-get-cleanup.sh && \
 
 # We'll keep configs in /data/mysql/config on first instance and local directory on others (is set locally in container)
 
@@ -54,9 +44,6 @@ RUN \
 	userdel mysql && \
 	addgroup -gid 999 mysql && \
 	useradd -s /bin/bash -g 999 -u 999 mysql
-
-COPY common /webserver-common/
-RUN /webserver-common/create-git-user.sh
 
 COPY mariadb/galera.cnf /etc/mysql_dist/galera.cfg
 COPY mariadb/webserver-entrypoint.sh /

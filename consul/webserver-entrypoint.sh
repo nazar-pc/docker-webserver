@@ -39,5 +39,4 @@ for node_ip in `/webserver-common/list-service-nodes.sh $SERVICE_NAME`; do
 	fi
 done
 
-set -e
 exec $cmd

@@ -1,28 +1,23 @@
 FROM phusion/baseimage:0.9.19
 LABEL maintainer "Nazar Mokrynskyi <nazar@mokrynskyi.com>"
 
+COPY common /webserver-common/
+
 RUN \
+
+	/webserver-common/create-git-user.sh && \
+
+	/webserver-common/apt-get-update.sh && \
+	/webserver-common/apt-get-install-common.sh && \
+	/webserver-common/apt-get-install-ceph-fuse.sh && \
+
+	apt-get install -y --no-install-recommends git mc wget php-cli && \
+
+	/webserver-common/apt-get-cleanup.sh && \
 
 # Enable SSH
 
 	rm -f /etc/service/sshd/down && \
-
-# Upgrade system and install dnsutils, curl, git, mc, wget and php-cli of course:)
-
-	apt-get update && \
-	apt-get upgrade -y && \
-	apt-get install -y --no-install-recommends dnsutils curl git mc wget php-cli && \
-
-# Ceph repository for up to date version of ceph-fuse package; Ceph itself is used as cluster filesystem
-
-	CEPH_VERSION=kraken && \
-	curl -sSL 'https://download.ceph.com/keys/release.asc' | apt-key add - && \
-	echo "deb http://download.ceph.com/debian-$CEPH_VERSION/ xenial main" > /etc/apt/sources.list.d/ceph-$CEPH_VERSION.list && \
-	apt-get update && \
-	apt-get install -y --no-install-recommends ceph-fuse && \
-
-	apt-get clean && \
-	rm -rf /var/lib/apt/lists/* && \
 
 # Rename SSH config directory
 
@@ -32,9 +27,6 @@ RUN \
 
 	COMPOSER_VERSION=1.3.2 && \
 	curl -sS https://getcomposer.org/installer | php -- --install-dir=/usr/local/bin --filename=composer --version=$COMPOSER_VERSION
-
-COPY common /webserver-common/
-RUN /webserver-common/create-git-user.sh
 
 COPY ssh/webserver-entrypoint.sh /
 
