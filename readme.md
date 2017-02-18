@@ -86,7 +86,7 @@ services:
 #    ports:
 #      - {ip where to bind}:{port on localhost where to bind}:22
 #    environment:
-#      - PUBLIC_KEY={your public SSH key}
+#      PUBLIC_KEY: '{your public SSH key}'
 ```
 
 Now customize it as you like, feel free to comment-out or remove `mariadb`, `php` or `ssh` container if you have just bunch of static files, also you can uncomment `phpmyadmin` container if needed.

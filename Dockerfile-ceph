@@ -22,10 +22,6 @@ ENV \
 	KV_PORT=80 \
 	OSD_TYPE=directory \
 	CEPHFS_CREATE=1 \
-	CEPH_MON_SERVICE=ceph-mon \
-	CEPH_OSD_SERVICE=ceph-osd \
-	CEPH_MDS_SERVICE=ceph-mds \
-	CEPH_RWG_SERVICE=ceph-rwg \
-	CEPH_RESTAPI_SERVICE=ceph-restapi
+	CEPH_MON_SERVICE=ceph-mon
 
 ENTRYPOINT ["/webserver-entrypoint.sh"]
