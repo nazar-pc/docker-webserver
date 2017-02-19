@@ -57,7 +57,7 @@ services:
     links:
       - php
 #    ports:
-#      - {ip where to bind}:{port on localhost where to bind}:80
+#      - {ip where to bind}:{port on previous ip where to bind}:80
     restart: always
     volumes_from:
       - data
@@ -76,7 +76,7 @@ services:
 #      - mariadb:mysql
 #    restart: always
 #    ports:
-#      - {ip where to bind}:{port on localhost where to bind}:80
+#      - {ip where to bind}:{port on previous ip where to bind}:80
   
   ssh:
     image: nazarpc/webserver:ssh
@@ -84,7 +84,7 @@ services:
     volumes_from:
       - data
 #    ports:
-#      - {ip where to bind}:{port on localhost where to bind}:22
+#      - {ip where to bind}:{port on previous ip where to bind}:22
 #    environment:
 #      PUBLIC_KEY: '{your public SSH key}'
 ```
