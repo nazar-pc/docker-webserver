@@ -14,6 +14,8 @@ Currently WebServer consists of such images:
 * restore container (based on official `debian:jessie` image)
 * [nazarpc/webserver-apps](https://github.com/nazar-pc/docker-webserver-apps) for ready to use applications that plays nicely with images mentioned above
 
+If you find this project useful, consider supporting its development on [patreon.com/nazarpc](https://www.patreon.com/nazarpc), this would help me a lot!
+
 # How to use
 The most convenient way to use all this is [Docker Compose](https://docs.docker.com/compose/)
 
