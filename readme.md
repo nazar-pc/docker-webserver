@@ -170,7 +170,7 @@ Internally all that matters is `/data` directory - it contains all necessary fil
 That is all what will be persistent, everything else outside `/data` will be lost during upgrade.
 
 # Update configuration
-If you update some configuration - you don't need to restart everything, restart only specific container you need, for instance:
+If you update some configuration - you don't need to restart everything, restart only specific service you need, for instance:
 ```
 docker-compose restart nginx
 ```

@@ -1,4 +1,4 @@
-# NOTE: Description below is highly experimental and might not work as expected or not work at all, DO NOT USE IN PRODUCTION!
+NOTE: Description below is experimental and might not work as expected or not work at all, DO NOT USE IN PRODUCTION, but report any issues you've encountered, please:)
 
 # Advanced usage
 Advanced usage includes ability to build cluster of multiple nodes that scale nicely and load balancing.
@@ -9,10 +9,28 @@ For instance, MariaDB instance is not a regular MariaDB server, but rather Maria
 
 The same about PhpMyAdmin, Nginx, PHP-FPM and SSH images - they are all ready to work in cluster, so you don't have to change your code at all, just modify declarative `docker-compose.yml` file.
 
-# TODO: backup/restore/upgrade details needs to be updated here
-Backup/restore images are still able to backup and restore your containers as it was before.
+TODO: backup/restore/upgrade details needs to be updated here
+Upgrade procedure remains the same as before, backup and restore depends on your persistent storage.
 
-Upgrade/backup/restore procedures remain the same as before.
+# Setup that works and setup that doesn't
+Setup described below is what should ideally work, but doesn't work quite yet (see [docker/docker#31157](https://github.com/docker/docker/issues/31157) and linked issues for details).
+
+The main issue is persistent storage. This repository contains Ceph image that can be used as persistent storage by mounting CephFS into target images, but Docker doesn't currently allow to mount anything within containers deployed using Docker Swarm Mode, so we can create Ceph cluster, but can't use it when needed.
+
+In order to overcome this and use built-in clusterization support you'll need to do 2 things:
+* have existing persistent storage and mount volume `/data` (also `/etc/ssh` for SSH image) in target services
+* remove from `docker-compose.yml` following lines, since they are provided by previous step and not working yet:
+```yml
+    environment:
+      CEPHFS_MOUNT: 1
+# In order to access FUSE
+    devices:
+      - /dev/fuse:/dev/fuse
+# In order to mount CEPHFS
+    cap_add:
+      - SYS_ADMIN
+```
+* ignore Ceph and Consul images altogether if you don't need them for other purposes
 
 # Zero-configuration
 All the features provided work with zero-configuration out of the box, all you need is declarative `docker-compose.yml` file.
@@ -30,7 +48,7 @@ One of the first major issue that needs to be solved when creating cluster is st
 
 We solve storage problem with Ceph, more precisely, with [Ceph FS](http://docs.ceph.com/docs/master/cephfs/).
 
-In order for this to work, we create Ceph cluster and then mount necessary directories with [ceph-fuse](http://docs.ceph.com/docs/master/man/8/ceph-fuse/) so that multiple container on different nodes of the cluster will have access to the same files.
+In order for this to work, we create Ceph cluster and then mount necessary directories with [ceph-fuse](http://docs.ceph.com/docs/master/man/8/ceph-fuse/) so that multiple containers on different nodes of the cluster will have access to the same files.
 
 For this purpose we'll use `nazarpc/webserver:ceph` image. It can work in different modes, which is why we specify different commands:
 ```yml
@@ -111,8 +129,7 @@ You can also scale `mariadb-haproxy` instance if needed.
 # MariaDB
 In order to scale MariaDB we'll need to build MariaDB Galera cluster.
 `nazarpc/webserver:mariadb` image is in fact already a cluster with single node - so, it it ready to scale at any time with Master-Master replication mode.
-# TODO: devices and cap_add are not working in Docker Swarm Mode
-In order to actually scale MariaDB we just need to mount CephFS within container and everything else will happen automatically:
+
 ```yml
 # docker-compose.yml
 version: '3.1'
@@ -142,7 +159,7 @@ docker-compose scale mariadb=3
 
 # Nginx, PHP-FPM and SSH
 They are very similar to MariaDB in terms of configuration, but don't create clusters by themselves.
-# TODO: devices and cap_add are not working in Docker Swarm Mode
+
 All you need to specify is that CephFS should be mounted:
 ```yml
 # docker-compose.yml
@@ -190,7 +207,6 @@ Main environment variables supported (common to all 3 images):
 * `CEPHFS_MOUNT` OPTIONAL (defaults to `0`), when set to `1`, container will try to mount CephFS on start
 
 # Combined example
-# TODO: devices and cap_add are not working in Docker Swarm Mode
 ```yml
 # docker-compose.yml
 version: '3.1'
