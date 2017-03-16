@@ -1,0 +1,3 @@
+#!/bin/sh
+docker tag $IMAGE_NAME $IMAGE_NAME-v1
+docker push $IMAGE_NAME-v1
