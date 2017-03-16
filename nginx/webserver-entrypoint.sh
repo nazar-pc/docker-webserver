@@ -20,6 +20,13 @@ fi
 if [ ! -e /data/nginx ]; then
 	mkdir -p /data/nginx/config /data/nginx/log /data/nginx/www
 	cp -a /etc/nginx_dist/* /data/nginx/config/
+	if [ -z "$(ls -A /data/nginx/www)" ]; then
+		cat <<-HTML > /data/nginx/www/index.html
+			<!doctype html>
+			Hello, world!<br>
+			Docker webserver is alive and ready to serve requests:)
+		HTML
+	fi
 fi
 
 chown git:git /data /data/nginx /data/nginx/log /data/nginx/www
