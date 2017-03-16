@@ -21,8 +21,10 @@ The most convenient way to use all this is [Docker Compose](https://docs.docker.
 
 At first you'll need to create persistent data-only container that will store all files, databases, ssh keys and settings of all these things:
 ```
-docker run --name example.com nazarpc/webserver:data
+docker run --name example.com nazarpc/webserver:data-v1
 ```
+
+NOTE: `-v1` suffix here and in all other places is optional ()there are also images without `-v1` suffix and they are exactly the same), however, it is possible that in future images without suffixes become completely incompatible and `-v2` suffixed images will be introduced, so you'd be better protected from upgrading to incompatible image rather than getting broken setup at some point in future (this might not happen ever, but still).
 
 This container will start and stop immediately, that is OK.
 
@@ -38,24 +40,24 @@ Now create `docker-compose.yml` inside with following contents:
 version: '2'
 services:
   data:
-    image: nazarpc/webserver:data
+    image: nazarpc/webserver:data-v1
     volumes_from:
       - container:example.com
   
   logrotate:
-    image: nazarpc/webserver:logrotate
+    image: nazarpc/webserver:logrotate-v1
     restart: always
     volumes_from:
       - data
   
   mariadb:
-    image: nazarpc/webserver:mariadb
+    image: nazarpc/webserver:mariadb-v1
     restart: always
     volumes_from:
       - data
   
   nginx:
-    image: nazarpc/webserver:nginx
+    image: nazarpc/webserver:nginx-v1
     links:
       - php
 #    ports:
@@ -65,7 +67,7 @@ services:
       - data
   
   php:
-    image: nazarpc/webserver:php-fpm
+    image: nazarpc/webserver:php-fpm-v1
     links:
       - mariadb:mysql
     restart: always
@@ -73,7 +75,7 @@ services:
       - data
   
 #  phpmyadmin:
-#    image: nazarpc/webserver:phpmyadmin
+#    image: nazarpc/webserver:phpmyadmin-v1
 #    links:
 #      - mariadb:mysql
 #    restart: always
@@ -81,7 +83,7 @@ services:
 #      - {ip where to bind}:{port on previous ip where to bind}:80
   
   ssh:
-    image: nazarpc/webserver:ssh
+    image: nazarpc/webserver:ssh-v1
     restart: always
     volumes_from:
       - data
@@ -116,14 +118,14 @@ Backup/restore images are not present in `docker-compose.yml`, so if you're usin
 
 Alternatively you can pull all images manually:
 ```
-docker pull nazarpc/webserver:data
-docker pull nazarpc/webserver:logrotate
-docker pull nazarpc/webserver:mariadb
-docker pull nazarpc/webserver:nginx
-docker pull nazarpc/webserver:php-fpm
-docker pull nazarpc/webserver:ssh
-docker pull nazarpc/webserver:backup
-docker pull nazarpc/webserver:restore
+docker pull nazarpc/webserver:data-v1
+docker pull nazarpc/webserver:logrotate-v1
+docker pull nazarpc/webserver:mariadb-v1
+docker pull nazarpc/webserver:nginx-v1
+docker pull nazarpc/webserver:php-fpm-v1
+docker pull nazarpc/webserver:ssh-v1
+docker pull nazarpc/webserver:backup-v1
+docker pull nazarpc/webserver:restore-v1
 ```
 
 And again in directory with `docker-compose.yml`:
@@ -132,9 +134,9 @@ docker-compose up -d
 ```
 
 # Backup
-To make backup you need to only backup volumes of data-only container. The easiest way to do that is using `nazarpc/webserver:backup` image:
+To make backup you need to only backup volumes of data-only container. The easiest way to do that is using `nazarpc/webserver:backup-v1` image:
 ```
-docker run --rm --volumes-from=example.com -v /backup-on-host:/backup --env BACKUP_FILENAME=new-backup nazarpc/webserver:backup
+docker run --rm --volumes-from=example.com -v /backup-on-host:/backup --env BACKUP_FILENAME=new-backup nazarpc/webserver:backup-v1
 ```
 
 This will result in `/backup-on-host/new-backup.tar` file being created - feel free to specify other directory and other name for backup file.
@@ -144,9 +146,9 @@ All other containers are standard and doesn't contain anything important, that i
 **NOTE: You'll likely want to stop MariaDB instance before backup (it is enough to stop master node in case of MariaDB cluster with 2+ nodes)**
 
 # Restore
-Restoration from backup is not more difficult that making backup, there is `nazarpc/webserver:restore` image for that:
+Restoration from backup is not more difficult that making backup, there is `nazarpc/webserver:restore-v1` image for that:
 ```
-docker run --rm --volumes-fromexample.com -v /backup-on-host/new-backup.tar:/backup.tar nazarpc/webserver:restore
+docker run --rm --volumes-fromexample.com -v /backup-on-host/new-backup.tar:/backup.tar nazarpc/webserver:restore-v1
 ```
 
 That is it, empty just created `example.com` container will be filled with data from backup and ready to use.

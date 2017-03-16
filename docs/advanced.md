@@ -50,24 +50,24 @@ We solve storage problem with Ceph, more precisely, with [Ceph FS](http://docs.c
 
 In order for this to work, we create Ceph cluster and then mount necessary directories with [ceph-fuse](http://docs.ceph.com/docs/master/man/8/ceph-fuse/) so that multiple containers on different nodes of the cluster will have access to the same files.
 
-For this purpose we'll use `nazarpc/webserver:ceph` image. It can work in different modes, which is why we specify different commands:
+For this purpose we'll use `nazarpc/webserver:ceph-v1` image. It can work in different modes, which is why we specify different commands:
 ```yml
 # docker-compose.yml
 version: '3.1'
 services:
 ...
   ceph-mon:
-    image: nazarpc/webserver:ceph
+    image: nazarpc/webserver:ceph-v1
     command: mon
     restart: always
 
   ceph-osd:
-    image: nazarpc/webserver:ceph
+    image: nazarpc/webserver:ceph-v1
     command: osd
     restart: always
 
   ceph-mds:
-    image: nazarpc/webserver:ceph
+    image: nazarpc/webserver:ceph-v1
     command: mds
     restart: always
 ```
@@ -84,14 +84,14 @@ NOTE: Any features supported by upstream [ceph/daemon](https://github.com/ceph/c
 # Consul
 Consul is an integral piece of the cluster, since it is actually required for Ceph to store configuration
 
-For this purpose we'll use `nazarpc/webserver:consul` image.
+For this purpose we'll use `nazarpc/webserver:consul-v1` image.
 ```yml
 # docker-compose.yml
 version: '3.1'
 services:
 ...
   consul:
-    image: nazarpc/webserver:consul
+    image: nazarpc/webserver:consul-v1
     restart: always
 ```
 Currently it is not possible to specify scaling in YAML file (see [docker/compose#1661](https://github.com/docker/compose/issues/1661) and [docker/compose#2496](https://github.com/docker/compose/issues/2496)), so we'll likely need to scale Consul nodes (to at least `MIN_SERVERS`) like following:
@@ -106,14 +106,14 @@ Main environment variables supported:
 Load Balancing is also an integral part of cluster robustness and performance. HAProxy might be used to hide behind multiple nodes under single entry point and distribute incoming requests across those nodes.
 HAProxy is only useful for TCP connections.
 
-For this purpose we'll use `nazarpc/webserver:haproxy` image, for instance:
+For this purpose we'll use `nazarpc/webserver:haproxy-v1` image, for instance:
 ```yml
 # docker-compose.yml
 version: '3.1'
 services:
 ...
   mariadb-haproxy:
-    image: nazarpc/webserver:haproxy
+    image: nazarpc/webserver:haproxy-v1
     restart: always
     environment:
       SERVICE_NAME: mariadb
@@ -128,7 +128,7 @@ You can also scale `mariadb-haproxy` instance if needed.
 
 # MariaDB
 In order to scale MariaDB we'll need to build MariaDB Galera cluster.
-`nazarpc/webserver:mariadb` image is in fact already a cluster with single node - so, it it ready to scale at any time with Master-Master replication mode.
+`nazarpc/webserver:mariadb-v1` image is in fact already a cluster with single node - so, it it ready to scale at any time with Master-Master replication mode.
 
 ```yml
 # docker-compose.yml
@@ -136,7 +136,7 @@ version: '3.1'
 services:
 ...
   mariadb:
-    image: nazarpc/webserver:mariadb
+    image: nazarpc/webserver:mariadb-v1
     restart: always
     environment:
       CEPHFS_MOUNT: 1
@@ -167,7 +167,7 @@ version: '3.1'
 services:
 ...
   nginx:
-    image: nazarpc/webserver:nginx
+    image: nazarpc/webserver:nginx-v1
     restart: always
     environment:
       CEPHFS_MOUNT: 1
@@ -179,7 +179,7 @@ services:
       - SYS_ADMIN
 
   php:
-    image: nazarpc/webserver:php-fpm
+    image: nazarpc/webserver:php-fpm-v1
     restart: always
     environment:
       CEPHFS_MOUNT: 1
@@ -191,7 +191,7 @@ services:
       - SYS_ADMIN
 
   ssh:
-    image: nazarpc/webserver:ssh
+    image: nazarpc/webserver:ssh-v1
     restart: always
     environment:
       CEPHFS_MOUNT: 1
@@ -212,33 +212,33 @@ Main environment variables supported (common to all 3 images):
 version: '3.1'
 services:
   consul:
-    image: nazarpc/webserver:consul
+    image: nazarpc/webserver:consul-v1
     restart: always
 
   ceph-mon:
-    image: nazarpc/webserver:ceph
+    image: nazarpc/webserver:ceph-v1
     command: mon
     restart: always
 
   ceph-osd:
-    image: nazarpc/webserver:ceph
+    image: nazarpc/webserver:ceph-v1
     command: osd
     restart: always
 
   ceph-mds:
-    image: nazarpc/webserver:ceph
+    image: nazarpc/webserver:ceph-v1
     command: mds
     restart: always
 
   mariadb-haproxy:
-    image: nazarpc/webserver:haproxy
+    image: nazarpc/webserver:haproxy-v1
     restart: always
     environment:
       SERVICE_NAME: mariadb
       SERVICE_PORTS: 3306
 
   mariadb:
-    image: nazarpc/webserver:mariadb
+    image: nazarpc/webserver:mariadb-v1
     restart: always
     environment:
       CEPHFS_MOUNT: 1
@@ -250,7 +250,7 @@ services:
       - SYS_ADMIN
 
   nginx:
-    image: nazarpc/webserver:nginx
+    image: nazarpc/webserver:nginx-v1
     restart: always
     environment:
       CEPHFS_MOUNT: 1
@@ -262,7 +262,7 @@ services:
       - SYS_ADMIN
 
   php:
-    image: nazarpc/webserver:php-fpm
+    image: nazarpc/webserver:php-fpm-v1
     restart: always
     environment:
       CEPHFS_MOUNT: 1
@@ -274,13 +274,13 @@ services:
       - SYS_ADMIN
 
   phpmyadmin:
-    image: nazarpc/webserver:phpmyadmin
+    image: nazarpc/webserver:phpmyadmin-v1
     restart: always
     environment:
       MYSQL_HOST: mariadb
   
   ssh:
-    image: nazarpc/webserver:ssh
+    image: nazarpc/webserver:ssh-v1
     restart: always
     environment:
       CEPHFS_MOUNT: 1
