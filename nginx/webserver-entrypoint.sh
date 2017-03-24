@@ -9,6 +9,7 @@ if [ -L /data/nginx/config ]; then
 	rm /data/nginx/config /data/nginx/log /data/nginx/www
 	mkdir /data/nginx/config /data/nginx/log /data/nginx/www
 	mv /etc/nginx/* /data/nginx/config/
+	mv /etc/nginx/.* /data/nginx/config/
 	mv /usr/share/nginx/html/* /data/nginx/www/
 	mv /var/log/nginx/* /data/nginx/log/
 	sed -i 's/\/etc\/nginx/\/data\/nginx\/config/g' `find /data/nginx/config -type f`
