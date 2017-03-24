@@ -11,7 +11,24 @@ RUN \
 	/webserver-common/apt-get-install-common.sh && \
 	/webserver-common/apt-get-install-ceph-fuse.sh && \
 
-	apt-get install -y --no-install-recommends git mc wget php-cli && \
+	apt-get install -y --no-install-recommends git mc wget \
+		php-cli \
+		php-bcmath \
+		php-bz2 \
+		php-exif \
+		php-ftp \
+		php-gd \
+		php-gettext \
+		php-mbstring \
+		php-mcrypt \
+		php-mysqli \
+		php-opcache \
+		php-shmop \
+		php-sockets \
+		php-sysvmsg \
+		php-sysvsem \
+		php-sysvshm \
+		php-zip && \
 
 	/webserver-common/apt-get-cleanup.sh && \
 
