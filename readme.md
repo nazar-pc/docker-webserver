@@ -148,7 +148,7 @@ All other containers are standard and doesn't contain anything important, that i
 # Restore
 Restoration from backup is not more difficult that making backup, there is `nazarpc/webserver:restore-v1` image for that:
 ```
-docker run --rm --volumes-fromexample.com -v /backup-on-host/new-backup.tar:/backup.tar nazarpc/webserver:restore-v1
+docker run --rm --volumes-from=example.com -v /backup-on-host/new-backup.tar:/backup.tar nazarpc/webserver:restore-v1
 ```
 
 That is it, empty just created `example.com` container will be filled with data from backup and ready to use.
