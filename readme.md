@@ -1,7 +1,7 @@
 # WebServer (MariaDB, PHP-FPM, Nginx) composed from several separate containers linked together
 Currently WebServer consists of such images:
 * Data-only container (based on official `debian:jessie` image)
-* logrotate container (based on official `debian:jessie` image)
+* Logrotate container (based on official `debian:jessie` image)
 * MariaDB (based on official `MariaDB` image)
 * Nginx (based on official `Nginx` image)
 * PHP-FPM (based on `nazarpc/php:fpm` image, which is official image + bunch of frequently used PHP extensions)
@@ -10,8 +10,8 @@ Currently WebServer consists of such images:
 * Ceph (based on upstream `ceph/daemon` image)
 * Consul (based on official `debian:jessie` image)
 * HAProxy (based on official `haproxy` image)
-* backup container (based on official `debian:jessie` image)
-* restore container (based on official `debian:jessie` image)
+* Backup container (based on official `debian:jessie` image)
+* Restore container (based on official `debian:jessie` image)
 * [nazarpc/webserver-apps](https://github.com/nazar-pc/docker-webserver-apps) for ready to use applications that plays nicely with images mentioned above
 
 If you find this project useful, consider supporting its development on [patreon.com/nazarpc](https://www.patreon.com/nazarpc), this would help me a lot!
@@ -24,7 +24,7 @@ At first you'll need to create persistent data-only container that will store al
 docker run --name example.com nazarpc/webserver:data-v1
 ```
 
-NOTE: `-v1` suffix here and in all other places is optional ()there are also images without `-v1` suffix and they are exactly the same), however, it is possible that in future images without suffixes become completely incompatible and `-v2` suffixed images will be introduced, so you'd be better protected from upgrading to incompatible image rather than getting broken setup at some point in future (this might not happen ever, but still).
+NOTE: `-v1` suffix here and in all other places is optional (there are also images without `-v1` suffix and they are exactly the same), however, it is possible that in future images without suffixes become completely incompatible and `-v2` suffixed images will be introduced, so you'd better be protected from upgrading to incompatible image rather than getting broken setup at some point in future (this might not happen ever, but still).
 
 This container will start and stop immediately, that is OK.
 
