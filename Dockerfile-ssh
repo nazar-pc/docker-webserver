@@ -1,4 +1,4 @@
-FROM phusion/baseimage:0.9.20
+FROM phusion/baseimage:0.9.21
 LABEL maintainer "Nazar Mokrynskyi <nazar@mokrynskyi.com>"
 
 COPY webserver-common /webserver-common/
@@ -13,6 +13,7 @@ RUN \
 
 	apt-get install -y --no-install-recommends git mc wget \
 		php-cli \
+		php-curl \
 		php-bcmath \
 		php-bz2 \
 		php-exif \
