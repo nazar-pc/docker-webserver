@@ -32,7 +32,4 @@ else
 	touch /data/php/before_start.sh
 fi
 
-export PHP_INI_DIR=/data/php/config
-export PHP_INI_SCAN_DIR=/data/php/config/php/conf.d
-
 exec php-fpm "$@"

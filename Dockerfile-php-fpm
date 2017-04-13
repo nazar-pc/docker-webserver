@@ -27,6 +27,12 @@ COPY php-fpm/webserver-entrypoint.sh /
 VOLUME \
 	/data
 
+# We're changing directory for configs, so this variables will help PHP to find its modules
+
+ENV \
+	PHP_INI_DIR=/data/php/config \
+	PHP_INI_SCAN_DIR=/data/php/config/php/conf.d
+
 ENV \
 	CEPH_MON_SERVICE=ceph-mon \
 	CEPHFS_MOUNT=0
