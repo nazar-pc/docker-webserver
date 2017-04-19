@@ -11,6 +11,7 @@ if [ -L /data/nginx/config ]; then
 	mv /etc/nginx/* /data/nginx/config/
 	mv /etc/nginx/.* /data/nginx/config/
 	mv /usr/share/nginx/html/* /data/nginx/www/
+	mv /usr/share/nginx/html/.* /data/nginx/www/
 	mv /var/log/nginx/* /data/nginx/log/
 	sed -i 's/\/etc\/nginx/\/data\/nginx\/config/g' `find /data/nginx/config -type f`
 	sed -i 's/\/var\/log\/nginx/\/data\/nginx\/log/g' `find /data/nginx/config -type f`
