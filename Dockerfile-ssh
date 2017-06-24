@@ -1,4 +1,4 @@
-FROM phusion/baseimage:0.9.21
+FROM phusion/baseimage:0.9.22
 LABEL maintainer "Nazar Mokrynskyi <nazar@mokrynskyi.com>"
 
 COPY webserver-common /webserver-common/
