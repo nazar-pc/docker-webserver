@@ -8,7 +8,7 @@ RUN \
 	/webserver-common/apt-get-update.sh && \
 	/webserver-common/apt-get-install-common.sh && \
 
-	CONSUL_VERSION=0.8.4 && \
+	CONSUL_VERSION=0.8.5 && \
 
 	apt-get install -y --no-install-recommends unzip && \
 
