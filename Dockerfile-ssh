@@ -43,8 +43,7 @@ RUN \
 
 # Install Composer
 
-	COMPOSER_VERSION=1.4.1 && \
-	curl -sS https://getcomposer.org/installer | php -- --install-dir=/usr/local/bin --filename=composer --version=$COMPOSER_VERSION
+	curl -sS https://getcomposer.org/installer | php -- --install-dir=/usr/local/bin --filename=composer
 
 COPY ssh/webserver-entrypoint.sh /
 
