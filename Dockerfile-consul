@@ -8,15 +8,13 @@ RUN \
 	/webserver-common/apt-get-update.sh && \
 	/webserver-common/apt-get-install-common.sh && \
 
-	CONSUL_VERSION=0.8.5 && \
+	CONSUL_VERSION=1.0.3 && \
 
 	apt-get install -y --no-install-recommends unzip && \
 
 	curl -o /tmp/consul.zip https://releases.hashicorp.com/consul/${CONSUL_VERSION}/consul_${CONSUL_VERSION}_linux_amd64.zip && \
-	curl -o /tmp/consul-ui.zip https://releases.hashicorp.com/consul/${CONSUL_VERSION}/consul_${CONSUL_VERSION}_web_ui.zip && \
 	unzip -d /bin /tmp/consul.zip && \
-	unzip -d /ui /tmp/consul-ui.zip && \
-	rm /tmp/consul* && \
+	rm /tmp/consul.zip && \
 
 	apt-get purge -y unzip && \
 

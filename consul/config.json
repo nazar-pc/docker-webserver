@@ -6,6 +6,5 @@
 	"ports"                : {
 		"dns"  : 53,
 		"http" : 80
-	},
-	"ui_dir"               : "/ui"
+	}
 }
